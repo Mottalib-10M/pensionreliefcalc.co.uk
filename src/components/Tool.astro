@@ -17,8 +17,10 @@ const spec = mini ? getSpec(mini) : null;
 const href = spec?.ctaPage ? route(spec.ctaPage, 'en') : undefined;
 const note = full ? getTool(full).formNote : undefined;
 const noteHref = note ? `${route(note.page, 'en')}${note.anchor ? `#${note.anchor}` : ''}` : undefined;
+const act = full ? getTool(full).action : undefined;
+const actionHref = act ? `${route(act.page, 'en')}${act.anchor ? `#${act.anchor}` : ''}` : undefined;
 const numDefaults: Record<string, number> = {};
 for (const [k, v] of Object.entries(props)) if (typeof v === 'number') numDefaults[k] = v;
 ---
-{full && <Calc client:load kind={full} defaults={numDefaults} methodHref={methodHref} idPrefix={idPrefix ?? (primary ? 'c' : 'k')} noteHref={noteHref} />}
+{full && <Calc client:load kind={full} defaults={numDefaults} methodHref={methodHref} idPrefix={idPrefix ?? (primary ? 'c' : 'k')} noteHref={noteHref} actionHref={actionHref} />}
 {mini && <MiniSim client:load kind={mini} href={href} defaults={numDefaults} primary={primary} idPrefix={idPrefix ?? (primary ? 'p' : 'm')} />}

@@ -5,7 +5,7 @@
 import type { SourceKey } from './engine/params';
 import type { Helpers } from './helpers';
 
-export type Group = 'relief' | 'allowances' | 'sacrifice' | 'retirement' | 'salary';
+export type Group = 'relief' | 'allowances' | 'sacrifice' | 'retirement' | 'salary' | 'cars';
 export interface FAQ { q: string; a: string }
 /** `tool:<spec>` (a full calculator of `lib/tool-specs.ts`) or `mini:<spec>` (a mini-calculator of `lib/mini-specs.ts`); `props` sets the page defaults. */
 export interface ToolDef { kind: string; props?: Record<string, string | number | boolean> }

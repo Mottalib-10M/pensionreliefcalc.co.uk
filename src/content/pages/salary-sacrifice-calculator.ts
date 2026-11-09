@@ -26,12 +26,12 @@ export default definePage({
     { q: 'Will my employer add its NI saving to my pension?', a: 'Some do, in full or in part, and the calculator has a field for it. It is a choice of the employer, not a rule. When it is passed on, the extra money lands as employer contribution and counts towards your annual allowance. From April 2029 the employer saving above the cap disappears, so a promise to share it may be reviewed.' },
   ],
   body: (h) => {
-    const sal = [28000, 40000, 52000, 70000, 95000];
+    const sal = [30000, 52000, 75000, 110000, 150000];
     const rows = sal.map((s) => { const a = h.relief({ salary: s, method: 'sacrifice', amount: 4000 }), b = h.relief({ salary: s, method: 'sacrifice', amount: 4000, after2029: true }), c = h.relief({ salary: s, method: 'ras', amount: 3200 });
       return [h.m(s), h.m(c.netCost), h.m(a.netCost), h.m(b.netCost), h.m(a.employerNiSaved), h.m(b.employerNiSaved)]; });
     return `<h2>${h.m(4000)} into the pension, five salaries</h2>
 <p>Each row puts ${h.m(4000)} gross into the pension and shows the effect on take-home pay three ways. The NI gain is largest between ${h.m(h.P.ni.primaryThreshold)} and ${h.m(h.P.ni.upperEarningsLimit)}, where employee NI is 8%; above that it is only 2%, which is why higher earners care more about the Income Tax and the employer's 15%.</p>
-${h.table(['Salary', 'Relief at source', 'Sacrifice now', 'Sacrifice from April 2029', 'Employer NI saved now', 'From April 2029'], rows, `Cost to take-home pay of ${h.m(4000)} into a pension, ${h.P.taxYear} rates, England, Wales or Northern Ireland. The April 2029 column keeps today's thresholds, which may change.`, ['l', 'r', 'r', 'r', 'r', 'r'])}
+${h.table(['Salary', 'Cost by relief at source', 'Cost by sacrifice now', 'Cost by sacrifice from April 2029', 'Employer NI saved now', 'Employer NI saved from April 2029'], rows, `Cost to take-home pay of ${h.m(4000)} into a pension, ${h.P.taxYear} rates, England, Wales or Northern Ireland. The April 2029 columns keep today's thresholds, which may change. The employer's saving is the same at every salary because its 15% has no upper limit.`, ['l', 'r', 'r', 'r', 'r', 'r'])}
 <h2>What the calculator counts, and what it does not</h2>
 <p>It applies the ${h.P.taxYear} Income Tax bands and Class 1 rates for category A employees from ${h.src('hmrc_employer', 'HMRC, rates and thresholds for employers 2026 to 2027')}, on a whole-year basis. Payroll works period by period, so a single month with a bonus can give a slightly different NI figure. It ignores student loan repayments, which also fall when salary is sacrificed, and benefits such as Universal Credit. For a sacrificed salary that crosses ${h.m(100000)}, the gain on the Personal Allowance is included, since salary given up lowers adjusted net income.</p>
 <h2>Before and after the cap</h2>

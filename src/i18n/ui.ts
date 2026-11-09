@@ -8,6 +8,6 @@ const en = {
   notFound: 'There is no page at this address. The pension tax relief calculator and every guide are one click away.',
   readMore: 'Read more', disclaimer: 'Estimate from the rules in force on the date shown. Not financial advice, and not a decision of HMRC or of your pension scheme.',
   ogl: 'Contains public sector information licensed under the',
-  independent: 'Independent site, not a government service.', startHere: 'Not sure where to start?',
+  independent: 'Independent site, not a government service. Nothing you type leaves your phone: no email, no account.', startHere: 'Not sure where to start?',
 };
 export function t(_lang: Locale) { return en; }

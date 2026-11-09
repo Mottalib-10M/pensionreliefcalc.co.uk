@@ -2,13 +2,13 @@ import { definePage } from '../../lib/guide-types';
 
 export default definePage({
   id: 'ev-salary-sacrifice-bik-rates',
-  group: 'sacrifice',
+  group: 'cars',
   order: 50,
   mini: { kind: 'mini:bik-years', props: { price: 45000, salary: 55000 } },
   related: ['salary-sacrifice-car-calculator', 'salary-sacrifice-calculator', 'salary-sacrifice-2029-cap', 'pension-tax-relief-on-80000-salary'],
   sources: ['leg_itepa139', 'leg_fa23_11', 'leg_fa25_5', 'leg_fa25_6', 'hmrc_480', 'gov_budget26'],
   slug: 'ev-salary-sacrifice-bik-rates',
-  nav: 'Electric car BIK rates to 2030',
+  nav: 'Electric company car tax (BIK) to 2030',
   card: 'Benefit in kind rates for electric cars and plug-in hybrids from 2026/27 to 2029/30, and what they mean over a salary sacrifice lease.',
   title: 'Electric Car BIK Rates 2026 to 2030 for Salary Sacrifice',
   description: 'Electric car BIK rates for salary sacrifice: 4% in 2026/27 rising to 9% in 2029/30 by law, plug-in hybrid bands by range, and the yearly tax on a lease.',

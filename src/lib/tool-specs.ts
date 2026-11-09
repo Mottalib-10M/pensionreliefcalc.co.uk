@@ -17,8 +17,12 @@ const C1 = '#24476B', C2 = '#5f93c9', C3 = '#bad1e8', C4 = '#94a3b8';
 
 export const NATION_OPTS = [{ value: '0', label: 'England, Wales or N. Ireland' }, { value: '1', label: 'Scotland' }];
 export const nation = (v: number): Nation => (Math.round(v) === 1 ? 'scotland' : 'ruk');
-export const METHOD_OPTS = [{ value: '0', label: 'Relief at source (paid after tax)' }, { value: '1', label: 'Net pay (taken before tax)' }, { value: '2', label: 'Salary sacrifice (employer pays it in)' }];
-export const method = (v: number): Method => (['ras', 'netpay', 'sacrifice'] as Method[])[Math.min(2, Math.max(0, Math.round(v)))];
+// Options in payslip words, the method's name in brackets (naive testers 2026-11-09, second round: 3 out of 3
+// could not tell "relief at source" from "net pay").
+export const METHOD_OPTS = [{ value: '0', label: 'From my bank, or after tax (relief at source)' }, { value: '1', label: 'Taken from my pay before tax (net pay)' }, { value: '2', label: 'My salary is reduced (salary sacrifice)' }];
+/** Relief calculator only: a fourth answer for the reader who does not know, worked out as relief at source. */
+export const METHOD_OPTS_UNSURE = [...METHOD_OPTS, { value: '3', label: 'I don’t know: show the usual case' }];
+export const method = (v: number): Method => (['ras', 'netpay', 'sacrifice', 'ras'] as Method[])[Math.min(3, Math.max(0, Math.round(v)))];
 const YESNO = [{ value: '0', label: 'No' }, { value: '1', label: 'Yes' }];
 const money = (id: string, label: string, def: number, help?: string, max = 10_000_000): MiniInput => ({ id, label, def, unit: '£', max, help });
 const salary = (def: number, label = 'Salary before tax, a year', help = 'Before any pension deduction or sacrifice'): MiniInput => money('salary', label, def, help);
@@ -27,20 +31,22 @@ const nationIn = (advanced = false): MiniInput => ({ id: 'nation', label: 'Where
 
 const TOOLS: Record<string, ToolSpec> = {
   relief: {
-    advancedLabel: 'More: other income, employer top-up, 2029 rules, pension already drawn',
-    formNote: { text: 'Not sure? On your payslip, a pension line taken before tax is net pay; taken after tax, or paid from your bank, is relief at source.', link: 'The payslip test', page: 'relief-at-source-vs-net-pay', anchor: 'which-one' },
-    inputs: [salary(45000, 'Salary or profits before tax, a year'), money('amount', 'You pay in a year', 3000, 'What leaves your bank account or your payslip'),
-      { id: 'method', label: 'How your pension gets its tax relief', def: 0, options: METHOD_OPTS }, nationIn(),
-      { ...money('other', 'Other taxable income a year', 0, 'Rent, a second job, a pension: not interest', 10_000_000), advanced: true }, { ...pct('share', 'Employer adds its NI saving (sacrifice only)', 0, 100, 'Leave 0 if you do not know'), decimals: 0 },
-      { id: 'y2029', label: 'Salary sacrifice rules', def: 0, options: [{ value: '0', label: 'today’s (2026/27)' }, { value: '1', label: 'From 6 April 2029' }], advanced: true },
-      { id: 'flex', label: 'Already taken taxable income from a pension pot?', def: 0, options: YESNO, advanced: true, help: 'Drawdown income or a taxable lump sum, not just the tax-free cash' }],
+    advancedLabel: 'More: other income, employer top-up, 2029 rules',
+    formNote: { text: 'Not sure how it is paid? A SIPP or personal pension paid from your bank is always the first line. At work, look at your payslip: a pension line taken before tax is net pay.', link: 'The payslip test', page: 'relief-at-source-vs-net-pay', anchor: 'which-one' },
+    exemple: (v) => `Example for someone earning ${m(v.salary)} who pays ${m(v.amount)} a year into a pension: change any figure below`,
+    action: { page: 'higher-rate-pension-tax-relief', anchor: 'how-to-claim' },
+    inputs: [salary(45000, 'Salary or profits before tax, a year'), money('amount', 'You pay in a year', 3000, 'What leaves your bank or your payslip. Paying monthly? Times 12: £250 a month is £3,000'),
+      { id: 'method', label: 'How your pension money is paid in', def: 0, options: METHOD_OPTS_UNSURE }, nationIn(),
+      { id: 'flex', label: 'Taken money from a pension pot already?', def: 0, options: [{ value: '0', label: 'No, or only the tax-free cash' }, { value: '1', label: 'Yes, income or a taxable lump sum' }] },
+      { ...money('other', 'Other taxable income a year', 0, 'Rent, a second job, a pension: not interest', 10_000_000), advanced: true }, { ...pct('share', 'Employer adds its National Insurance saving (sacrifice only)', 0, 100, 'Leave 0 if you do not know'), decimals: 0 },
+      { id: 'y2029', label: 'Salary sacrifice rules', def: 0, options: [{ value: '0', label: 'today’s (2026/27)' }, { value: '1', label: 'From 6 April 2029' }], advanced: true }],
     run: (v) => {
       const meth = method(v.method), n = nation(v.nation);
       const r = relief({ salary: v.salary, otherIncome: v.other, nation: n, method: meth, amount: v.amount, employerNiShare: v.share / 100, after2029: v.y2029 === 1 });
       const help = r.gross - r.netCost;
       const rows: Array<[string, string] | [string, string, 'total']> = [];
       if (meth === 'ras') {
-        rows.push(['You pay from your bank', m(v.amount)], ['Already added by your provider', m(r.providerTopUp)], ['Extra you claim yourself from HMRC', m(r.claim)]);
+        rows.push(['You pay from your bank', m(v.amount)], ['Already added by your provider', m(r.providerTopUp)], ['Extra you claim yourself from HMRC (the tax office)', m(r.claim)]);
       } else if (meth === 'netpay') {
         rows.push(['Taken from your pay before tax', m(r.gross)], ['Income Tax saved', m(r.incomeTaxSaved)]);
         if (r.hmrcTopUp > 0) rows.push(['HMRC top-up for low earners (next year)', m(r.hmrcTopUp)]);
@@ -53,15 +59,16 @@ const TOOLS: Record<string, ToolSpec> = {
       const band = BAND_LABEL[r.topBandBefore];
       const sub = meth === 'ras'
         ? (r.claim > 0
-          ? `Costs you ${m(r.netCost)}. The other ${m(help)} (${pc(r.effectiveRate)}) is tax relief: ${m(r.providerTopUp)} your provider adds, and ${m(r.claim)} you must claim from HMRC.`
-          : `Costs you ${m(r.netCost)}. The other ${m(help)} (${pc(r.effectiveRate)}) is tax relief your provider adds. You pay tax at the ${band}, so there is nothing more to claim.`)
+          ? `Costs you ${m(r.netCost)}. The other ${m(help)} (${pc(r.effectiveRate)} of the ${m(r.gross)}) is tax relief: ${m(r.providerTopUp)} your provider adds, and ${m(r.claim)} you must claim from HMRC.`
+          : `Costs you ${m(r.netCost)}. The other ${m(help)} is tax relief your provider adds: ${m(1)} for every ${m(4)} you pay, which is ${pc(r.effectiveRate)} of the ${m(r.gross)} in your pension. You pay tax at the ${band}, so there is nothing more to claim.`)
         : meth === 'netpay'
           ? `Costs you ${m(r.netCost)}. The other ${m(help)} (${pc(r.effectiveRate)}) is Income Tax you no longer pay. Nothing to claim.`
           : `Costs you ${m(r.netCost)}. The other ${m(help)} (${pc(r.effectiveRate)}) is Income Tax and National Insurance (NI) you no longer pay.`;
       const notes: string[] = [];
+      if (Math.round(v.method) === 3) notes.push('Not sure of your method, so this shows relief at source, the way every SIPP and personal pension works. Net pay gives the same tax relief through your payslip; salary sacrifice costs less. The payslip test below tells them apart.');
       if (n === 'ruk') {
         const sc = relief({ salary: v.salary, otherIncome: v.other, nation: 'scotland', method: meth, amount: v.amount, employerNiShare: v.share / 100, after2029: v.y2029 === 1 });
-        if (Math.round(sc.netCost) !== Math.round(r.netCost)) notes.push(`Paying Income Tax in Scotland? The same payment would cost you ${m(sc.netCost)}${meth === 'ras' ? `, with ${m(sc.claim)} to claim` : ''}. Choose Scotland in “Where you pay Income Tax”.`);
+        if (Math.round(sc.netCost) !== Math.round(r.netCost)) notes.push(`Only if you pay Income Tax in Scotland: the same payment would cost you ${m(sc.netCost)}${meth === 'ras' ? `, with ${m(sc.claim)} to claim` : ''}. Choose Scotland in “Where you pay Income Tax”.`);
       }
       if (r.overLimit > 0) notes.push(`Relief stops at 100% of your earnings, or ${m(P.relief.basicAmount)} gross if that is higher: ${m(r.overLimit)} of this contribution gets no relief.`);
       if (meth === 'ras' && r.claim > 0) notes.push('Your provider only ever adds 20%. The rest comes back through your Self Assessment return or HMRC’s online claim, as a refund or a change to your tax code.');
@@ -70,7 +77,7 @@ const TOOLS: Record<string, ToolSpec> = {
       if (v.flex === 1) { const mp = P.allowances.years[CURRENT].mpaa!; notes.push(r.gross > mp ? `You have taken taxable pension income, so only ${m(mp)} a year can go into pension pots without a tax charge (the money purchase annual allowance). This payment puts ${m(r.gross)} in: check it on the annual allowance calculator.` : `You have taken taxable pension income: up to ${m(mp)} a year can still go into pension pots without a charge, so ${m(r.gross)} is fine.`); }
       if (r.capApplied) notes.push(`From 6 April 2029 only the first ${m(P.sacrifice.niCap)} of salary given up for a pension each year is free of NI; Income Tax relief is unchanged.`);
       return {
-        head: ['Goes into your pension', m(r.gross)], sub, rows,
+        head: ['Goes into your pension', m(r.gross)], sub, rows, action: meth === 'ras' && r.claim > 0 ? `How to claim this ${m(r.claim)}, step by step` : undefined,
         bar: { segments: [{ label: 'From your pay', value: Math.max(0, r.netCost), color: C1 }, { label: 'Income Tax relief', value: r.providerTopUp + r.claim + r.incomeTaxSaved + r.hmrcTopUp, color: C2 }, { label: 'NI saved', value: r.niSaved + r.employerNiPassed, color: C3 }].filter((x) => x.value > 0.5), total: r.gross, aria: 'Who pays for the contribution' },
         notes, sticky: `${m(r.gross)} into your pension for ${m(r.netCost)} from you`,
       };
@@ -80,7 +87,8 @@ const TOOLS: Record<string, ToolSpec> = {
 
   sacrifice: {
     advancedLabel: 'More: other income, compare with another method',
-    inputs: [salary(52000), money('amount', 'Salary to give up a year', 4000, 'Your employer pays it into your pension instead'), { id: 'share', label: 'Employer adds its NI saving to your pension', def: 0, unit: '%', max: 100, decimals: 0, help: 'Ask HR. Leave 0 if you do not know.' }, nationIn(), { ...money('other', 'Other taxable income a year', 0, 'Rent, a second job: leave 0 if none', 10_000_000), advanced: true }, { id: 'pad', label: 'Compare with', def: 0, options: [{ value: '0', label: 'Relief at source' }, { value: '1', label: 'Net pay' }], advanced: true }],
+    exemple: (v) => `Example for someone earning ${m(v.salary)} who gives up ${m(v.amount)} a year: change any figure below`,
+    inputs: [salary(52000), money('amount', 'Salary to give up a year', 4000, 'Your employer pays it into your pension instead'), { id: 'share', label: 'Employer adds its National Insurance (NI) saving to your pension', def: 0, unit: '%', max: 100, decimals: 0, help: 'Leave 0 if you do not know.' }, nationIn(), { ...money('other', 'Other taxable income a year', 0, 'Rent, a second job: leave 0 if none', 10_000_000), advanced: true }, { id: 'pad', label: 'Compare with', def: 0, options: [{ value: '0', label: 'Relief at source' }, { value: '1', label: 'Net pay' }], advanced: true }],
     run: (v) => {
       const n = nation(v.nation);
       const now = relief({ salary: v.salary, otherIncome: v.other, nation: n, method: 'sacrifice', amount: v.amount, employerNiShare: v.share / 100 });
@@ -126,7 +134,7 @@ const TOOLS: Record<string, ToolSpec> = {
   aa: {
     advancedLabel: 'More: carry forward, Scotland',
     inputs: [money('income', 'Taxable income before pension contributions', 150000, 'Salary before sacrifice, bonus, profits, rent'), money('own', 'Your own contributions, gross', 30000, 'Relief at source: what you pay plus 25%'), { id: 'method', label: 'How you contribute', def: 1, options: METHOD_OPTS }, money('employer', 'Employer contributions on top', 15000, 'For a defined benefit scheme: the pension input amount'),
-      { id: 'flex', label: 'Taken flexible income from a pension?', def: 0, options: YESNO, help: 'Drawdown income or an UFPLS triggers the MPAA' }, nationIn(true), money('cf', 'Unused allowance from the last 3 years', 0, 'From the carry forward calculator', 1_000_000)].map((x) => (x.id === 'cf' ? { ...x, advanced: true } : x)),
+      { id: 'flex', label: 'Taken flexible income from a pension?', def: 0, options: YESNO, help: 'Drawdown income or a taxable lump sum lowers your limit to £10,000 (the money purchase annual allowance, MPAA)' }, nationIn(true), money('cf', 'Unused allowance from the last 3 years', 0, 'From the carry forward calculator', 1_000_000)].map((x) => (x.id === 'cf' ? { ...x, advanced: true } : x)),
     run: (v) => {
       const a = annualAllowance({ income: v.income, own: v.own, method: method(v.method), employer: v.employer, flexiblyAccessed: v.flex === 1, carryForward: v.cf, nation: nation(v.nation) });
       const rows: Array<[string, string] | [string, string, 'total']> = [['Threshold income', m(a.thresholdIncome)], ['Adjusted income', m(a.adjustedIncome)], ['Reduction by the taper', m(a.reduction)], ['Total pension savings this year', m(a.savings)], ['Allowance with carry forward', m(a.available)]];
@@ -144,8 +152,9 @@ const TOOLS: Record<string, ToolSpec> = {
 
   cf: {
     advancedLabel: 'More: allowances of earlier years (if tapered)',
+    exemple: (v) => `Example for someone paying ${m(v.cur)} in this year after saving ${m(v.s0)}, ${m(v.s1)} and ${m(v.s2)} in the three years before: change any figure below`,
     inputs: [money('cur', 'Pension savings in 2026/27', 90000, 'You and your employer, gross'), money('s2', 'Pension savings in 2025/26', 30000, undefined, 1_000_000), money('s1', 'Pension savings in 2024/25', 25000, undefined, 1_000_000), money('s0', 'Pension savings in 2023/24', 10000, undefined, 1_000_000),
-      { id: 'member', label: 'In a registered scheme in all three years?', def: 1, options: YESNO, help: 'A year without membership gives no carry forward' }, money('aaCur', 'Your allowance in 2026/27', 60000, 'Lower if tapered', 1_000_000), money('a2', 'Your allowance in 2025/26', 60000, undefined, 1_000_000), money('a1', 'Your allowance in 2024/25', 60000, undefined, 1_000_000), money('a0', 'Your allowance in 2023/24', 60000, undefined, 1_000_000)].map((x, k) => (k >= 5 ? { ...x, advanced: true } : x)),
+      { id: 'member', label: 'In a workplace or personal pension in each of those years?', def: 1, options: YESNO, help: 'Even with nothing paid in. The State Pension does not count' }, money('aaCur', 'Your allowance in 2026/27', 60000, 'Lower if tapered', 1_000_000), money('a2', 'Your allowance in 2025/26', 60000, undefined, 1_000_000), money('a1', 'Your allowance in 2024/25', 60000, undefined, 1_000_000), money('a0', 'Your allowance in 2023/24', 60000, undefined, 1_000_000)].map((x, k) => (k >= 5 ? { ...x, advanced: true } : x)),
     run: (v) => {
       const prev = PREVIOUS_THREE.map((y, k) => ({ year: y as AllowanceYear, savings: [v.s0, v.s1, v.s2][k], allowance: [v.a0, v.a1, v.a2][k], member: v.member === 1 }));
       const r = carryForward(prev, v.cur, v.aaCur);
@@ -153,7 +162,7 @@ const TOOLS: Record<string, ToolSpec> = {
       return {
         head: [r.excess > 0 ? 'Over the allowance, after carry forward' : 'You can still pay in this year', m(r.excess > 0 ? r.excess : room)], sub: `Allowance available in 2026/27, carry forward included: ${m(r.available)}.`,
         rows: [['2026/27 allowance used first', m(r.current.fromCurrent)], ...r.rows.map((x): [string, string] => [`${x.year}: ${m(x.unused)} unused, ${m(x.used)} used now`, `${m(x.left)} left`]), ...(r.rows[0] && r.rows[0].left > 0 ? [[`Lost on 6 April 2027 (rest of ${r.rows[0].year})`, m(r.rows[0].left)] as [string, string]] : []), ['Can still be carried into 2027/28', m(r.carryIntoNext), 'total']],
-        notes: ['This year’s allowance is used first, then the earliest year. What is left of 2023/24 is lost on 6 April 2027.', v.member === 1 ? 'Each year counts only if you were in a UK registered pension scheme then, even with nothing paid in.' : 'Without scheme membership in those years nothing can be carried forward.'],
+        notes: ['Tax relief on your own payments is still limited to what you earn this year: carry forward raises the allowance, never that limit.', 'This year’s allowance is used first, then the earliest year. What is left of 2023/24 is lost on 6 April 2027.', v.member === 1 ? 'Each year counts only if you were in a UK registered pension scheme then, even with nothing paid in.' : 'Without scheme membership in those years nothing can be carried forward.'],
         sticky: r.excess > 0 ? `Over by ${m(r.excess)} after carry forward` : `Room left this year: ${m(room)}`,
       };
     },
@@ -162,16 +171,21 @@ const TOOLS: Record<string, ToolSpec> = {
 
   sipp: {
     advancedLabel: 'More: other pension savings',
-    inputs: [money('earnings', 'Earnings this tax year', 60000, 'Salary or self-employed profits: relevant UK earnings'), money('pay', 'You pay into the SIPP this year', 8000, 'From your bank. The provider adds £1 for every £4 you pay'), money('employer', 'Employer pension contributions elsewhere', 0, 'Leave 0 if you have no employer pension'), nationIn(), money('other', 'Your other contributions, gross', 0, 'Workplace pension, net pay or sacrifice', 1_000_000)].map((x) => (x.id === 'other' ? { ...x, advanced: true } : x)),
+    exemple: (v) => `Example for someone earning ${m(v.earnings)} who pays ${m(v.pay)} into a SIPP this year: change any figure below`,
+    action: { page: 'higher-rate-pension-tax-relief', anchor: 'how-to-claim' },
+    inputs: [money('earnings', 'Earnings this tax year', 60000, 'Salary or self-employed profits, before tax. Not rent, dividends or interest'), money('pay', 'You pay into the SIPP this year', 8000, 'From your bank. The provider adds £1 for every £4 you pay'), money('employer', 'Your employer’s payments into a workplace pension', 0, 'Put 0 if you only have a private pension'), nationIn(), money('other', 'Your other contributions, gross', 0, 'Workplace pension, net pay or sacrifice', 1_000_000)].map((x) => (x.id === 'other' ? { ...x, advanced: true } : x)),
     run: (v) => {
       const r = relief({ salary: v.earnings, nation: nation(v.nation), method: 'ras', amount: v.pay });
       const aa = P.allowances.years[CURRENT].aa;
-      const roomGross = Math.max(0, Math.min(Math.max(v.earnings, P.relief.basicAmount) - v.other, aa - v.employer - v.other));
+      // One figure for the room left (naive testers 2026-11-09, second round: two near-identical caps confused 2 out of 3):
+      // what can still be paid from the bank with relief after this payment, the lower of the earnings limit and the allowance.
+      const leftGross = Math.max(0, Math.min(Math.max(v.earnings, P.relief.basicAmount) - v.other - r.gross, aa - v.employer - v.other - r.gross));
       return {
-        head: ['Goes into your SIPP', m(r.gross)], sub: `Real cost ${m(r.netCost)} once you claim ${m(r.claim)} back.`,
-        rows: [['You pay from your bank', m(v.pay)], ['Already added by the provider (basic rate)', m(r.providerTopUp)], ['Extra you claim yourself from HMRC', m(r.claim)], ['Real cost to you', m(r.netCost), 'total'], ['Most you could pay from your bank this year with relief, in total', m(roomGross * 0.8)], [`Still free in your ${m(aa)} allowance after this payment (gross)`, m(Math.max(0, aa - v.employer - v.other - r.gross))]],
+        head: ['Goes into your SIPP', m(r.gross)], sub: r.claim > 0 ? `Real cost ${m(r.netCost)} once you claim ${m(r.claim)} back from HMRC (the tax office).` : `Real cost ${m(r.netCost)}: you pay tax at the basic rate, so there is nothing more to claim.`,
+        rows: [['You pay from your bank', m(v.pay)], ['Already added by the provider (basic rate)', m(r.providerTopUp)], ['Extra you claim yourself from HMRC', m(r.claim)], ['Real cost to you', m(r.netCost), 'total'], ['You can still pay from your bank this year, with relief', m(leftGross * 0.8)]],
         bar: { segments: [{ label: 'Your money', value: Math.max(0, r.netCost), color: C1 }, { label: 'Added by provider', value: r.providerTopUp, color: C2 }, { label: 'Claimed from HMRC', value: r.claim, color: C3 }], total: r.gross, aria: 'Who pays into the SIPP' },
-        notes: [r.overLimit > 0 ? `Relief stops at your earnings (or ${m(P.relief.basicAmount)} gross): ${m(r.overLimit)} of this would get no relief.` : 'Carry forward can raise the allowance but never the earnings limit on relief.'],
+        notes: [r.overLimit > 0 ? `Relief stops at your earnings (or ${m(P.relief.basicAmount)} gross): ${m(r.overLimit)} of this would get no relief.` : `That ${m(leftGross * 0.8)} becomes ${m(leftGross)} once the provider adds its top-up. It is the lower of two limits: your earnings, and what is left of the ${m(aa)} yearly allowance after your employer’s payments. Carry forward can raise the allowance, never the earnings limit.`],
+        action: r.claim > 0 ? `How to claim this ${m(r.claim)}, step by step` : undefined,
         sticky: `${m(r.gross)} into the SIPP for ${m(r.netCost)} after relief`,
       };
     },

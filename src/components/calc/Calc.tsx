@@ -17,11 +17,11 @@ import MentionExemple from './MentionExemple';
 import { resultatExemple } from '../../lib/libelles-trame';
 import { valeurAffichee } from './MiniSim';
 
-interface Props { kind: string; defaults?: Record<string, number>; methodHref: string; idPrefix?: string; embed?: boolean; noteHref?: string }
+interface Props { kind: string; defaults?: Record<string, number>; methodHref: string; idPrefix?: string; embed?: boolean; noteHref?: string; actionHref?: string }
 
 function pairs<T>(xs: T[]): T[][] { const out: T[][] = []; for (let i = 0; i < xs.length; i += 2) out.push(xs.slice(i, i + 2)); return out; }
 
-export default function Calc({ kind, defaults = {}, methodHref, idPrefix = 'c', embed = false, noteHref }: Props) {
+export default function Calc({ kind, defaults = {}, methodHref, idPrefix = 'c', embed = false, noteHref, actionHref }: Props) {
   const spec = getTool(kind);
   const init = () => Object.fromEntries(spec.inputs.map((i) => [i.id, defaults[i.id] ?? i.def]));
   const [v, setV] = useState<Record<string, number>>(init);
@@ -56,12 +56,13 @@ export default function Calc({ kind, defaults = {}, methodHref, idPrefix = 'c', 
     <div ref={root} data-chrome data-calc={kind} className="rechner border border-navy-300 bg-white p-4 sm:p-5">
       <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,26rem)]">
         <form className="grid content-start gap-4" onSubmit={(e) => e.preventDefault()}>
+          {spec.exemple && resultatExemple(touched) && <p data-exemple-suppose className="rounded-md border border-amber-300 bg-amber-50 px-3 py-1.5 text-sm text-amber-900">{spec.exemple(v)}</p>}
           {pairs(main).map((p, k) => <div key={k} className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">{p.map(field)}</div>)}
           {spec.formNote && noteHref && <p className="-mt-1 text-sm text-navy-700">{spec.formNote.text} <a href={noteHref} className="font-medium text-accent-700 underline underline-offset-2">{spec.formNote.link}</a></p>}
           {adv.length > 0 && (
             <details className="group border-t border-navy-200 pt-3">
               <summary className="cursor-pointer text-sm font-medium text-accent-700">{spec.advancedLabel ?? 'More options'}
-                <span data-actuellement className="mt-0.5 block text-xs font-normal text-navy-600">Set to: {adv.map((i) => `${i.label} ${valeurAffichee(i, v[i.id])}`).join(' · ')}</span></summary>
+                <span data-actuellement className="mt-0.5 block text-xs font-normal text-navy-600">Set to: {adv.map((i) => `${i.label}: ${valeurAffichee(i, v[i.id])}`).join(' · ')}</span></summary>
               <div className="mt-3 grid gap-4">{pairs(adv).map((p, k) => <div key={k} className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">{p.map(field)}</div>)}</div>
             </details>
           )}
@@ -75,6 +76,7 @@ export default function Calc({ kind, defaults = {}, methodHref, idPrefix = 'c', 
             {out.rows.map((r) => <tr key={r[0]} className={r[2] === 'total' ? 'total' : undefined}><td className="pr-3 text-navy-700">{r[0]}</td><td className="tabular-nums text-right text-navy-900">{r[1]}</td></tr>)}
           </tbody></table>
           {out.bar && out.bar.total > 0 && <div className="mt-3"><StackedBar segments={out.bar.segments} total={out.bar.total} ariaPrefix={out.bar.aria} /></div>}
+          {out.action && actionHref && <p className="mt-3"><a href={actionHref} data-action className="font-semibold text-accent-700 underline underline-offset-2">{out.action} →</a></p>}
           {(out.notes ?? []).map((n) => <p key={n} className="mt-2 text-xs text-navy-700">{n}</p>)}
         </div>
       </div>

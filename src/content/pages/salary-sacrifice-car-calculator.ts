@@ -2,7 +2,7 @@ import { definePage } from '../../lib/guide-types';
 
 export default definePage({
   id: 'salary-sacrifice-car-calculator',
-  group: 'sacrifice',
+  group: 'cars',
   order: 20,
   tool: { kind: 'tool:car', props: { salary: 55000, monthly: 450, price: 42000, kind: 0, year: 0 } },
   related: ['ev-salary-sacrifice-bik-rates', 'salary-sacrifice-calculator', 'salary-sacrifice-child-benefit', 'pension-tax-relief-on-60000-salary'],

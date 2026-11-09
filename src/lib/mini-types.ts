@@ -17,8 +17,14 @@ export interface ToolOut {
   notes?: string[];
   /** One line for the bar kept at the bottom of a phone screen. */
   sticky: string;
+  /** Text of a link under the result to the page of `ToolSpec.action` (shown only when set). */
+  action?: string;
 }
 export interface ToolSpec { inputs: MiniInput[]; advancedLabel?: string;
   /** Line under the form with a link to the page that answers a field the reader may not know (naive testers, 2026-11-09). */
   formNote?: { text: string; link: string; page: string; anchor?: string };
+  /** What the example figures assume, in plain words, shown above the fields until the reader changes one (second round of naive testers, 2026-11-09). */
+  exemple?: (v: Record<string, number>) => string;
+  /** Page the result's `action` link goes to (e.g. how to claim). */
+  action?: { page: string; anchor?: string };
   run: (v: Record<string, number>, touched?: Record<string, boolean>) => ToolOut; footnote: string }

@@ -36,7 +36,7 @@ export function helpers(strict = false) {
   const methodsTable = (salary: number, grosses: number[], nation: T.Nation = 'ruk', caption?: string) => {
     const rows = grosses.map((g) => { const c = R.compareMethods(salary, g, nation);
       return [m(g), m(c.ras.netCost), m(c.netpay.netCost), m(c.sacrifice.netCost), m(c.sacrifice2029.netCost), pc(c.ras.effectiveRate, 0)]; });
-    return table(['Into the pension', 'Relief at source', 'Net pay', 'Salary sacrifice now', 'Sacrifice from April 2029', 'Relief rate, relief at source'], rows, caption ?? `What each gross contribution costs your take-home pay on a salary of ${m(salary)}, ${nation === 'scotland' ? 'Scotland' : 'England, Wales or Northern Ireland'}, ${P.taxYear}. Worked out by this site's engine from HMRC's 2026 to 2027 rates.`, ['l', 'r', 'r', 'r', 'r', 'r']);
+    return table(['Into the pension', 'Cost by relief at source', 'Cost by net pay', 'Cost by salary sacrifice now', 'Cost by sacrifice from April 2029', 'Share paid by tax relief'], rows, caption ?? `What each gross contribution costs your take-home pay on a salary of ${m(salary)}, ${nation === 'scotland' ? 'Scotland' : 'England, Wales or Northern Ireland'}, ${P.taxYear}. Worked out by this site's engine from HMRC's 2026 to 2027 rates.`, ['l', 'r', 'r', 'r', 'r', 'r']);
   };
   return {
     P, T, R, A, C, F, I, higherStart, scotHigher, relief,

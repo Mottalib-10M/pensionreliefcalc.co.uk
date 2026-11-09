@@ -20,7 +20,7 @@ export default function StackedBar({ segments, total, ariaPrefix }: { segments: 
         })}
       </div>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-        {segments.map((s, i) => <div key={i} className="flex items-center gap-1.5 text-xs text-navy-600"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.color }} aria-hidden="true" />{s.label}</div>)}
+        {segments.map((s, i) => <div key={i} className="flex items-center gap-1.5 text-xs text-navy-600"><span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.color }} aria-hidden="true" />{s.label} {Math.round((s.value / total) * 100)}{PCT}</div>)}
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ describe('audit 2026-11-09', () => {
   });
   it('relief result: an England default points to the Scottish figure when it differs', () => {
     const o = getTool('relief').run({ salary: 45000, amount: 3000, method: 0, nation: 0, other: 0, share: 0, y2029: 0, flex: 0 });
-    expect((o.notes ?? []).some((n) => n.startsWith('Paying Income Tax in Scotland?'))).toBe(true);
+    expect((o.notes ?? []).some((n) => n.startsWith('Only if you pay Income Tax in Scotland:'))).toBe(true);
   });
   it('methods page: the Scottish example shows the starter rate difference', () => {
     const st = h.R.compareMethods(15000, 1000, 'scotland');
