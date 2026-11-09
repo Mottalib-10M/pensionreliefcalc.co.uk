@@ -102,3 +102,20 @@ h1 { font-weight: 700; } h2 { font-weight: 650; } h3 { font-weight: 600; }
   .callout { display: block; margin: 1.5rem 0; padding: .9rem 1.1rem; border-left: 4px solid var(--color-accent-500); background: var(--color-accent-50); color: var(--color-navy-800); }
   .callout-title { display: block; margin-bottom: .25rem; font-weight: 700; color: var(--color-navy-900); }
 }
+
+/* Folded sections (naive testers 2026-11-09: pages of 12 to 29 phone screens). Every section without a
+   calculator is a <details> under its own H2: the whole text stays in the HTML for search engines and
+   assistants, the phone reader sees a list of titles and opens the one that answers their question. */
+details.pli { border-top: 1px solid var(--color-navy-200); }
+details.pli:last-of-type { border-bottom: 1px solid var(--color-navy-200); }
+details.pli > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 0; }
+details.pli > summary::-webkit-details-marker { display: none; }
+details.pli > summary::after { content: ''; flex: none; width: .6rem; height: .6rem; margin-right: .3rem; border-right: 2px solid var(--color-accent-700); border-bottom: 2px solid var(--color-accent-700); transform: rotate(45deg); transition: transform .15s; }
+details.pli[open] > summary::after { transform: rotate(-135deg); }
+details.pli > summary :is(h2, .pli-titre) { margin: 0 !important; padding: 0 !important; border: 0 !important; font-size: 1.2rem; line-height: 1.35; color: var(--color-navy-900); }
+details.pli > summary .pli-plus { display: block; margin-top: .15rem; font-family: var(--font-sans); font-size: .85rem; font-weight: 400; color: var(--color-navy-600); }
+details.pli > .pli-corps { padding-bottom: 1rem; }
+details.pli > .pli-corps > :first-child { margin-top: 0; }
+.prose details.pli > summary h2 { border-top: 0; }
+/* Source lists: links look like links (testers: "the sources do not look clickable"). */
+.sources-liste a { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 2px; }

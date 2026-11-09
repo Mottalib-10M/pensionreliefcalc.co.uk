@@ -43,10 +43,19 @@ const faqs = [
   { q: 'What is the most I can pay into a pension in 2026/27?', a: `Tax relief is limited to 100% of your relevant UK earnings, or ${m(P.relief.basicAmount)} gross if you earn less. All pension savings for the year, including employer money, should stay within the ${m(Y.aa)} annual allowance, plus unused allowance from the last three years. Above ${m(Y.adjusted)} of adjusted income the allowance can taper down to ${m(Y.minTaper)}.` },
   { q: 'Is salary sacrifice better than relief at source?', a: `For most employees it costs less, by the employee NI it saves: 8% on pay up to ${m(P.ni.upperEarningsLimit)} and 2% above. Income Tax relief is the same once any claim is made. From 6 April 2029 the government plans to cap the NI saving at the first ${m(P.sacrifice.niCap)} a year of pension sacrifice. Sacrifice lowers your contractual salary, which can affect a mortgage application or some benefits.` },
   { q: 'Do I get pension tax relief if I don’t pay tax?', a: `Yes, in a relief at source scheme: ${m(P.relief.basicAmountNet)} paid in becomes ${m(P.relief.basicAmount)}, even with no earnings. In a net pay scheme, people earning below the Personal Allowance got nothing until 2024/25; HMRC now pays them a 20% top-up after the tax year. Salary sacrifice gives no Income Tax relief below the allowance, but can still save NI.` },
-  { q: 'Is pension tax relief different in Scotland?', a: `Yes. Earnings are taxed at six Scottish rates, so relief follows them. A relief at source provider adds 20% for everyone; intermediate rate taxpayers claim 1% more, higher rate 22%, advanced rate 25% and top rate 28%. The higher rate starts at ${m(43663)}, so many Scottish employees on ordinary salaries have a claim their English colleagues do not.` },
+  { q: 'Is pension tax relief different in Scotland?', a: `Yes. Earnings are taxed at six Scottish rates, so relief follows them. A relief at source provider adds 20% for everyone; intermediate rate taxpayers claim 1% more, higher rate 22%, advanced rate 25% and top rate 28%. The higher rate starts at ${m(h.scotHigher)}, so many Scottish employees on ordinary salaries have a claim their English colleagues do not.` },
   { q: 'Can I get my pension tax relief back for past years?', a: 'Yes, for four tax years after the end of the year you paid in. During 2026/27 you can claim for 2022/23 to 2025/26, with 2022/23 closing on 5 April 2027. Use the gross contributions from your provider’s annual statements, and claim through Self Assessment or HMRC’s online form. Net pay and salary sacrifice members have no claim to make.' },
 ];
 const jsonLd = [webApplicationSchema({ name: 'Pension tax relief calculator 2026/27', description: 'Pension tax relief by salary and method, relief at source, net pay and salary sacrifice, rest of the UK and Scotland, 2026/27.', path: route('home', lang), lang }), websiteSchema(lang), organizationSchema(lang), faqSchema(faqs, lang)];
+// Beginner paths (naive testers 2026-11-09): one line per common situation, each to the page that answers it.
+const paths = [
+  { t: 'My employer offers salary sacrifice', d: 'What it takes off your take-home pay, a month and a year, now and from April 2029', href: route('salary-sacrifice-calculator', lang) },
+  { t: 'I do not know how my workplace pension gets its relief', d: 'The payslip test: three lines to tell relief at source, net pay and sacrifice apart', href: `${route('relief-at-source-vs-net-pay', lang)}#which-one` },
+  { t: `I earn more than ${m(h.higherStart)}, or ${m(h.scotHigher)} in Scotland`, d: 'The extra relief your provider does not add, and how to claim it back', href: route('higher-rate-pension-tax-relief', lang) },
+  { t: 'I pay into a SIPP or a personal pension from my bank', d: 'What a payment becomes, the claim, and how much more you can pay in this year', href: route('sipp-calculator', lang) },
+  { t: 'I have already taken money from a pension pot', d: `The ${m(Y.mpaa!)} limit on saving again, and what does not trigger it`, href: route('money-purchase-annual-allowance', lang) },
+  { t: `My income is close to ${m(100000)}`, d: 'Where a contribution is relieved at 60% and wins back the Personal Allowance', href: route('pension-contributions-over-100k', lang) },
+];
 const groups = GROUPS_ORDER.map((g) => ({ g, pages: PAGES.filter((p) => p.group === g) })).filter((x) => x.pages.length);
 const timeline = [
   { d: P.allowances.lifetimeAllowanceAbolished, t: `Lifetime allowance abolished; tax-free cash capped by the lump sum allowance of ${m(P.allowances.lumpSumAllowance)}. The net pay top-up for low earners starts with the 2024/25 tax year.` },
@@ -60,21 +69,17 @@ const timeline = [
 <PageLayout title="Pension Tax Relief Calculator 2026/27: SIPP and Sacrifice" description="Pension tax relief calculator 2026/27: what a contribution costs by relief at source, net pay or salary sacrifice, the claim back, Scotland and the 2029 change." lang={lang} jsonLd={jsonLd} faqs={faqs} faqOuverte={0}>
   <header class="mb-3">
     <h1 class="text-[1.75rem] font-bold text-navy-900 max-sm:leading-tight sm:text-3xl md:text-4xl">Pension tax relief calculator: what your contribution really costs, 2026/27</h1>
-    <p class="mt-2 text-base text-navy-700 sm:text-lg">Enter your salary, what you pay in and how your scheme takes it. You get the amount reaching your pension, the relief to claim back and the cost to your take-home pay, for England, Wales, Northern Ireland or Scotland.</p>
-    <p data-chrome class="mt-1 text-xs text-navy-600">{ui.independent}</p>
+    <p class="mt-2 text-base text-navy-700 sm:text-lg">Every {m(100 * (1 - P.relief.rasRate))} you pay into a pension becomes {m(100)}: the government adds the tax. Pay tax above 20% and you claim more back; through salary sacrifice you save National Insurance (NI) too. Put in your salary and what you pay to see your own figures.</p>
+    <p data-chrome class="mt-1 text-xs text-navy-600">{ui.independent} <a href="#start" class="font-medium text-accent-700 underline underline-offset-2">{ui.startHere}</a></p>
   </header>
   <div data-outil class="mb-4"><Tool tool={{ kind: 'tool:relief', props: { salary: 45000, amount: 3000, method: 0 } }} primary={true} /></div>
   <p class="mb-8 text-sm text-navy-600">HMRC rates for {P.taxYear} ({P.taxYearLong}) · last updated <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time> · {AUTHOR_NAME} · <a href={route('method', lang)} class="underline hover:text-navy-900">How the sums are done</a> · <a href={route('about', lang)} class="underline hover:text-navy-900">About this site</a></p>
 
-  <div class="prose prose-slate max-w-none">
-    <p>The relief calculators that pension providers publish, read for this site in November 2026, state that they use the rates of England, Wales and Northern Ireland only and assume no carry forward. This one works out the relief on the same contribution three ways, by relief at source, net pay and salary sacrifice, on HMRC's {P.taxYear} rates for the rest of the UK and for Scotland, with the claim to make, the Personal Allowance won back above {m(100000)}, the low earner top-up and the £2,000 NI cap that starts in April 2029. It sells no pension and ranks no provider.</p>
-    <p>A pension contribution is the only common way to move income out of tax at your top rate and, for most employees, out of National Insurance too. On {m(45000)}, paying {m(3000)} into a SIPP puts {m(ex.gross)} in the pension; the same {m(ex.gross)} through salary sacrifice costs {m(exS.netCost)} of take-home pay instead of {m(ex.netCost)}. On {m(60000)}, {m(8000)} paid in becomes {m(ex60.gross)} and gives {m(ex60.claim)} to claim back. On {m(110000)}, the same payment brings back {m(ex110.claim)}, {pc(ex110.effectiveRate)} relief, because it restores Personal Allowance. Those differences are what the calculator is for.</p>
-  </div>
-
-  <section class="not-prose my-10" aria-labelledby="ladder-title">
-    <h2 id="ladder-title" class="text-2xl font-bold text-navy-900">Your relief rate, income by income</h2>
-    <p class="mt-2 text-navy-700">Share of a {m(1000)} gross contribution paid by tax relief, and by NI savings under salary sacrifice, at each income. Rest of the UK and Scotland side by side; net pay gives the same Income Tax relief as relief at source once any claim is made.</p>
-    <Fragment set:html={h.table(['Income', 'Rest of UK: tax relief', 'Rest of UK: sacrifice', 'Scotland: tax relief', 'Scotland: sacrifice'], ladder, `${P.taxYear}, Income Tax and employee Class 1 NI, category A. Worked out by this site's engine from HMRC's published rates.`, ['l', 'r', 'r', 'r', 'r'])} />
+  <section id="start" class="not-prose mb-10" aria-labelledby="start-title">
+    <h2 id="start-title" class="text-2xl font-bold text-navy-900">Not sure where to start? Pick the line that sounds like you</h2>
+    <ul class="mt-3 divide-y divide-navy-200 border-y border-navy-200">
+      {paths.map((x) => <li class="py-3"><a href={x.href} class="font-medium text-accent-700 underline underline-offset-2">{x.t}</a><span class="block text-sm text-navy-600">{x.d}</span></li>)}
+    </ul>
   </section>
 
   <div class="prose prose-slate max-w-none">
@@ -87,10 +92,19 @@ const timeline = [
     </ol>
     <p>Below the Personal Allowance relief at source is the most generous method; between {m(I.personalAllowance)} and {m(h.higherStart)} sacrifice is the cheapest by the full 8% NI; above that line the methods end level on Income Tax and sacrifice keeps a 2% edge. The <Fragment set:html={h.a('relief-at-source-vs-net-pay', 'guide to the three methods')} /> works through the cases one by one.</p>
 
-    <h2>Scotland: same rules, different rates</h2>
-    <p>A Scottish taxpayer's earnings are taxed at six rates in {P.taxYear}, from 19% to 48% (<Fragment set:html={h.src('gov_scot', 'GOV.UK, Scottish Income Tax')} />), and pension relief follows them. The provider still adds 20% under relief at source; intermediate rate taxpayers claim 1% more, higher rate taxpayers 22%, advanced rate 25% and top rate 28%. Because the Scottish higher rate starts at {m(43663)}, an employee on {m(47000)} in Glasgow who pays {m(2400)} into a SIPP has {m(scot47.claim)} to claim, against {m(ruk47.claim)} for the same person in Manchester. National Insurance is UK-wide, so between {m(43663)} and {m(P.ni.upperEarningsLimit)} a Scottish employee pays 42% tax and 8% NI on each extra pound, and a salary sacrifice in that slice is relieved at half its value. The <Fragment set:html={h.a('scottish-pension-tax-relief', 'Scottish relief guide')} /> sets out every band.</p>
+    <p>The relief calculators that pension providers publish, read for this site in November 2026, state that they use the rates of England, Wales and Northern Ireland only and assume no carry forward. This one works out the relief on the same contribution three ways, by relief at source, net pay and salary sacrifice, on HMRC's {P.taxYear} rates for the rest of the UK and for Scotland, with the claim to make, the Personal Allowance won back above {m(100000)}, the low earner top-up and the £2,000 NI cap that starts in April 2029. It sells no pension and ranks no provider.</p>
+    <p>A pension contribution is the only common way to move income out of tax at your top rate and, for most employees, out of National Insurance too. On {m(45000)}, paying {m(3000)} into a SIPP puts {m(ex.gross)} in the pension; the same {m(ex.gross)} through salary sacrifice costs {m(exS.netCost)} of take-home pay instead of {m(ex.netCost)}. On {m(60000)}, {m(8000)} paid in becomes {m(ex60.gross)} and gives {m(ex60.claim)} to claim back. On {m(110000)}, the same payment brings back {m(ex110.claim)}, {pc(ex110.effectiveRate)} relief, because it restores Personal Allowance. Those differences are what the calculator is for.</p>
+  </div>
 
-    <h2>The four limits, in the order they bite</h2>
+  <p class="mt-10 mb-2 text-sm text-navy-600">More detail, folded: tap a title to open it.</p>
+  <details class="pli"><summary><h2>Your relief rate, income by income</h2></summary><div class="pli-corps">
+    <p class="mt-2 text-navy-700">Share of a {m(1000)} gross contribution paid by tax relief, and by NI savings under salary sacrifice, at each income. Rest of the UK and Scotland side by side; net pay gives the same Income Tax relief as relief at source once any claim is made.</p>
+    <Fragment set:html={h.table(['Income', 'Rest of UK: tax relief', 'Rest of UK: sacrifice', 'Scotland: tax relief', 'Scotland: sacrifice'], ladder, `${P.taxYear}, Income Tax and employee Class 1 NI, category A. Worked out by this site's engine from HMRC's published rates.`, ['l', 'r', 'r', 'r', 'r'])} />
+  </div></details>
+  <details class="pli"><summary><h2>Scotland: same rules, different rates</h2></summary><div class="pli-corps prose prose-slate max-w-none">
+    <p>A Scottish taxpayer's earnings are taxed at six rates in {P.taxYear}, from 19% to 48% (<Fragment set:html={h.src('gov_scot', 'GOV.UK, Scottish Income Tax')} />), and pension relief follows them. The provider still adds 20% under relief at source; intermediate rate taxpayers claim 1% more, higher rate taxpayers 22%, advanced rate 25% and top rate 28%. Because the Scottish higher rate starts at {m(h.scotHigher)}, an employee on {m(47000)} in Glasgow who pays {m(2400)} into a SIPP has {m(scot47.claim)} to claim, against {m(ruk47.claim)} for the same person in Manchester. National Insurance is UK-wide, so between {m(h.scotHigher)} and {m(P.ni.upperEarningsLimit)} a Scottish employee pays 42% tax and 8% NI on each extra pound, and a salary sacrifice in that slice is relieved at half its value. The <Fragment set:html={h.a('scottish-pension-tax-relief', 'Scottish relief guide')} /> sets out every band.</p>
+  </div></details>
+  <details class="pli"><summary><h2>The four limits, in the order they bite</h2></summary><div class="pli-corps prose prose-slate max-w-none">
     <ol>
       <li><strong>Your earnings.</strong> Personal contributions get relief only up to 100% of your relevant UK earnings for the tax year, or {m(P.relief.basicAmount)} gross if that is more (<Fragment set:html={h.src('leg_fa04_190', 'Finance Act 2004, section 190')} />). Rent, dividends and interest are not relevant earnings. Employer contributions are not limited by your earnings.</li>
       <li><strong>The annual allowance.</strong> {m(Y.aa)} of total pension savings a year, yours and your employer's together, before a tax charge (<Fragment set:html={h.src('hmrc_rates', 'HMRC, pension schemes rates')} />). Unused allowance from the three previous years can be carried forward if you were a member of a registered scheme in them. The <Fragment set:html={h.a('carry-forward-calculator', 'carry forward calculator')} /> does that sum.</li>
@@ -99,31 +113,24 @@ const timeline = [
     </ol>
     <p>The calculator flags the first limit itself and points to the second when the contribution approaches it. It does not know your other pensions, so if you pay into more than one, add them up before you rely on the allowance check.</p>
 
-    <h2>Where relief is worth the most</h2>
+  </div></details>
+  <details class="pli"><summary><h2>Where relief is worth the most</h2></summary><div class="pli-corps prose prose-slate max-w-none">
     <p>Three bands of income give far more than the headline rates. Between {m(100000)} and {m(I.paZeroAt)}, the Personal Allowance is withdrawn at {m(1)} for every {m(2)}, so income there is taxed at 60% and contributions are relieved at 60%; in Scotland, at 67.5%. Between {m(P.childBenefit.hicbcFrom)} and {m(P.childBenefit.hicbcTo)}, a parent claiming Child Benefit pays a charge of 1% of the benefit for every {m(P.childBenefit.hicbcStep)} of income, so a contribution saves the charge as well as 40% tax; with three children the combined relief can pass 70%. And just above {m(100000)}, Tax-Free Childcare stops for the whole household (<Fragment set:html={h.src('gov_tfc', 'GOV.UK, Tax-Free Childcare')} />), which a contribution can prevent. The guides on <Fragment set:html={h.a('pension-contributions-over-100k', 'contributions over £100,000')} /> and on <Fragment set:html={h.a('salary-sacrifice-child-benefit', 'the Child Benefit charge')} /> work through each case.</p>
-  </div>
-
-  <section class="not-prose my-10" aria-labelledby="cost-title">
-    <h2 id="cost-title" class="text-2xl font-bold text-navy-900">The cost of {m(5000)} in your pension, by salary</h2>
+  </div></details>
+  <details class="pli"><summary><h2>The cost of {m(5000)} in your pension, by salary</h2></summary><div class="pli-corps">
     <p class="mt-2 text-navy-700">What {m(5000)} gross reaching the pension costs your take-home pay under each method, now and once the sacrifice cap applies from 6 April 2029. Rest of the UK.</p>
     <Fragment set:html={h.table(['Salary', 'Relief at source', 'Net pay', 'Sacrifice now', 'Sacrifice from April 2029'], [20000, 35000, 50000, 65000, 90000, 115000, 160000].map((s) => { const c = R.compareMethods(s, 5000); return [m(s), m(c.ras.netCost), m(c.netpay.netCost), m(c.sacrifice.netCost), m(c.sacrifice2029.netCost)]; }), `${P.taxYear} rates; the April 2029 column keeps today's thresholds. Relief at source cost is after the claim for higher rate relief.`, ['l', 'r', 'r', 'r', 'r'])} />
-  </section>
-
-  <div class="prose prose-slate max-w-none">
-    <h2>Salary sacrifice after April 2029</h2>
+  </div></details>
+  <details class="pli"><summary><h2>Salary sacrifice after April 2029</h2></summary><div class="pli-corps prose prose-slate max-w-none">
     <p>The government's policy paper of {h.date(P.sacrifice.niCapAnnounced)} says that from April 2029 only the first {m(P.sacrifice.niCap)} a year of employee pension contributions made by salary sacrifice will be exempt from NI (<Fragment set:html={h.src('gov_ss2029', 'HM Treasury and HMRC')} />). Above that, employee and employer NI will be due as on ordinary pay, while Income Tax relief and the NI exemption for employer contributions are unchanged. For someone on {m(40000)} sacrificing {m(6000)}, the employee NI saving falls from {m(cap.niSaved)} to {m(cap29.niSaved)} a year and the employer's from {m(cap.employerNiSaved)} to {m(cap29.employerNiSaved)}. Until then the full saving is available; the <Fragment set:html={h.a('salary-sacrifice-calculator', 'salary sacrifice calculator')} /> and the <Fragment set:html={h.a('salary-sacrifice-2029-cap', 'guide to the cap')} /> show the before and after.</p>
     <p>Salary sacrifice for an electric car is a separate benefit with its own rules. Cars up to {P.sacrifice.carMaxCo2NormalRules} g/km are taxed on list price times the appropriate percentage, {pc(P.cars.zero['2026/27'])} for an electric car this year, rising to {pc(P.cars.zero['2029/30'])} in 2029/30 under the Finance Act 2025. On {m(55000)}, a {m(42000)} car for {m(450)} a month of sacrifice costs about {m(car.netMonthly)} a month after tax and NI saved. The <Fragment set:html={h.a('salary-sacrifice-car-calculator', 'car calculator')} /> does the sum for any year.</p>
-  </div>
-
-  <section class="not-prose my-10" aria-labelledby="tl-title">
-    <h2 id="tl-title" class="text-2xl font-bold text-navy-900">Dated changes, 2024 to 2029</h2>
+  </div></details>
+  <details class="pli"><summary><h2>Dated changes, 2024 to 2029</h2></summary><div class="pli-corps">
     <ol class="mt-4 space-y-3 border-l-2 border-accent-500 pl-5">
       {timeline.map((x) => <li><p class="text-sm font-semibold text-accent-700"><time datetime={x.d}>{displayDate(x.d, 'en-GB')}</time></p><p class="text-navy-800">{x.t}</p></li>)}
     </ol>
-  </section>
-
-  <div class="prose prose-slate max-w-none">
-    <h2>Getting the relief you are owed</h2>
+  </div></details>
+  <details class="pli"><summary><h2>Getting the relief you are owed</h2></summary><div class="pli-corps prose prose-slate max-w-none">
     <p>Most of the relief in the UK system arrives without anyone asking. The gaps are predictable:</p>
     <ul>
       <li><strong>Higher rate taxpayers in relief at source schemes</strong> must claim the extra 20% or 25%, and in Scotland 22%, 25% or 28%. Many never do. Claims run four tax years back, so in {P.taxYear} the earliest year still open is 2022/23, until 5 April 2027 (<Fragment set:html={h.src('hmrc_claim', 'HMRC, claim tax relief on private pension payments')} />).</li>
@@ -133,16 +140,16 @@ const timeline = [
     </ul>
     <p>The <Fragment set:html={h.a('higher-rate-pension-tax-relief', 'higher rate relief guide')} /> goes through the claim step by step, and the <Fragment set:html={h.a('sipp-calculator', 'SIPP calculator')} /> shows what a payment from your bank becomes.</p>
 
-    <h2>Worked out on your salary</h2>
+  </div></details>
+  <details class="pli"><summary><h2>Worked out on your salary</h2></summary><div class="pli-corps prose prose-slate max-w-none">
     <p>Six pages run the calculator at a fixed salary and explain what is special about it: {m(50000)}, just under the higher rate line in England but already at 42% in Scotland; {m(60000)}, where the Child Benefit charge starts; {m(80000)}, with nearly {m(30000)} of room at 40%; {m(100000)}, where the 60% band begins; {m(125000)}, where a contribution of about {m(25000)} wins back the whole allowance; and {m(150000)}, with 45% relief and the claim of 25%. They are listed below with every other calculator and guide.</p>
 
-    <h2>Where the figures come from</h2>
-    <p>The Income Tax bands and Personal Allowance come from <Fragment set:html={h.src('gov_rates', 'GOV.UK')} /> and the Scottish rates from the Scottish Income Tax page; NI rates and thresholds from <Fragment set:html={h.src('hmrc_employer', 'HMRC’s rates and thresholds for employers 2026 to 2027')} />; the annual allowance, taper and MPAA for every year back to 2016/17 from HMRC's pension schemes rates; the relief limits and carry forward from the Finance Act 2004 on legislation.gov.uk; company car percentages from section 139 of the Income Tax (Earnings and Pensions) Act 2003 as amended. The parameter file cites {nSrc} official pages, each read on {h.date(P.retrieved_at)}, and the engine is tested against GOV.UK's own worked examples, including the {m(60270)} relief at source case. The <a href={route('method', lang)}>method page</a> lists the rules and the tests; the <a href={route('about', lang)}>about page</a> says who publishes the site and how to report an error.</p>
+  </div></details>
+  <details class="pli"><summary><h2>Where the figures come from</h2></summary><div class="pli-corps prose prose-slate max-w-none">
+    <p>The Income Tax bands and Personal Allowance come from <Fragment set:html={h.src('gov_rates', 'GOV.UK')} /> and the Scottish rates from the Scottish Income Tax page; NI rates and thresholds from <Fragment set:html={h.src('hmrc_employer', 'HMRC’s rates and thresholds for employers 2026 to 2027')} />; the annual allowance, taper and MPAA for every year back to 2016/17 from HMRC's pension schemes rates; the relief limits and carry forward from the Finance Act 2004 on legislation.gov.uk; company car percentages from section 139 of the Income Tax (Earnings and Pensions) Act 2003 as amended. Every rate used comes from one of {nSrc} official pages, each read on {h.date(P.retrieved_at)}, and the results are checked against GOV.UK's own worked examples, including the {m(60270)} relief at source case. The <a href={route('method', lang)}>method page</a> lists the rules and the tests; the <a href={route('about', lang)}>about page</a> says who publishes the site and how to report an error.</p>
     <p>What the calculator leaves out: savings and dividend income, Gift Aid, student loan repayments, the Marriage Allowance, defined benefit accrual, and any provider or adviser charge. It treats salary and contributions as whole-year figures, which payroll may spread differently. Nothing you type leaves your browser. It is not advice, and the decisions it informs, how much to save and through which scheme, are yours and your scheme's to make.</p>
-  </div>
-
-  <section class="mt-12" aria-labelledby="guides-title">
-    <h2 id="guides-title" class="text-2xl font-bold text-navy-900">Every calculator and guide</h2>
+  </div></details>
+  <details class="pli"><summary><h2 id="guides-title">Every calculator and guide</h2></summary><div class="pli-corps">
     <div class="mt-4 grid gap-x-10 gap-y-6 md:grid-cols-2">
       {groups.map(({ g, pages }) => (
         <div>
@@ -151,5 +158,5 @@ const timeline = [
         </div>
       ))}
     </div>
-  </section>
+  </div></details>
 </PageLayout>

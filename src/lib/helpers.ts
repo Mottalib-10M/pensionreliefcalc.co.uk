@@ -29,15 +29,17 @@ export function helpers(strict = false) {
   };
   const I = P.income;
   const higherStart = I.personalAllowance + I.ruk[0].upTo!;
+  /** First pound taxed at the Scottish higher rate (params: scotlandIncomeBands). */
+  const scotHigher = I.scotlandIncomeBands.find((b) => /^higher/i.test(b.name))!.from;
   const relief = R.relief;
   /** Rows: contribution → cost under each method for one salary (gross into the pension from your pay). */
   const methodsTable = (salary: number, grosses: number[], nation: T.Nation = 'ruk', caption?: string) => {
     const rows = grosses.map((g) => { const c = R.compareMethods(salary, g, nation);
       return [m(g), m(c.ras.netCost), m(c.netpay.netCost), m(c.sacrifice.netCost), m(c.sacrifice2029.netCost), pc(c.ras.effectiveRate, 0)]; });
-    return table(['Into the pension', 'Relief at source', 'Net pay', 'Salary sacrifice now', 'Sacrifice from April 2029', 'Relief (RAS)'], rows, caption ?? `What each gross contribution costs your take-home pay on a salary of ${m(salary)}, ${nation === 'scotland' ? 'Scotland' : 'England, Wales or Northern Ireland'}, ${P.taxYear}. Worked out by this site's engine from HMRC's 2026 to 2027 rates.`, ['l', 'r', 'r', 'r', 'r', 'r']);
+    return table(['Into the pension', 'Relief at source', 'Net pay', 'Salary sacrifice now', 'Sacrifice from April 2029', 'Relief rate, relief at source'], rows, caption ?? `What each gross contribution costs your take-home pay on a salary of ${m(salary)}, ${nation === 'scotland' ? 'Scotland' : 'England, Wales or Northern Ireland'}, ${P.taxYear}. Worked out by this site's engine from HMRC's 2026 to 2027 rates.`, ['l', 'r', 'r', 'r', 'r', 'r']);
   };
   return {
-    P, T, R, A, C, F, I, higherStart, relief,
+    P, T, R, A, C, F, I, higherStart, scotHigher, relief,
     /** Link to another page of the site by id. */
     a,
     m, m2, pc,

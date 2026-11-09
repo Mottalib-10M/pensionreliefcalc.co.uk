@@ -10,9 +10,9 @@ export default definePage({
   slug: 'annual-allowance-calculator',
   nav: 'Annual allowance calculator',
   card: 'Threshold income, adjusted income, the tapered allowance and any annual allowance charge for 2026/27, in HMRC’s order.',
-  title: 'Annual Allowance Calculator 2026/27: Taper and Tax Charge',
-  description: 'Annual allowance calculator for 2026/27: threshold and adjusted income in HMRC’s order, the taper down to £10,000, the MPAA and the charge on any excess.',
-  h1: 'Annual allowance calculator: your tapered allowance and any charge for 2026/27',
+  title: 'Pension Annual Allowance Calculator 2026/27: Taper, Charge',
+  description: 'Pension annual allowance calculator 2026/27: threshold and adjusted income in HMRC’s order, the taper down to £10,000, the MPAA and the charge on any excess.',
+  h1: 'Pension annual allowance calculator: your tapered allowance and any charge for 2026/27',
   intro: 'The calculator opens on a high earner with £280,000 of income, a net pay contribution and employer money. Change the figures to see the allowance HMRC’s steps give you and the charge on any excess.',
   resume: (h) => {
     const Y = h.P.allowances.years['2026/27'];

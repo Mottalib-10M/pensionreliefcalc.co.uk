@@ -25,7 +25,7 @@ export default definePage({
     { q: 'Can I claim higher rate SIPP relief without a Self Assessment return?', a: 'Often, yes. If you are not in Self Assessment, HMRC lets you claim relief on payments into a relief at source pension online, by phone or by letter, and adjusts your tax code or repays you. If you already file a return, you put the gross contributions in the pensions section instead. Claims can go back four tax years from the end of the year in which you paid.' },
   ],
   body: (h) => {
-    const rows = [40000, 60000, 80000, 110000, 150000].map((e) => { const r = h.relief({ salary: e, method: 'ras', amount: 8000 }); return [h.m(e), h.m(r.gross), h.m(r.providerTopUp), h.m(r.claim), h.m(r.netCost), h.pc(r.effectiveRate)]; });
+    const rows = [40000, 60000, 80000, 110000, 150000].map((e) => { const r = h.relief({ salary: e, method: 'ras', amount: 8000 }); return [h.m(e), h.m(r.gross), h.m(r.providerTopUp), h.m(r.claim), h.m(r.netCost), h.pc(r.effectiveRate, 0)]; });
     const scot = h.relief({ salary: 60000, nation: 'scotland', method: 'ras', amount: 8000 });
     const low = h.relief({ salary: 2000, method: 'ras', amount: 4000 });
     return `<h2>The same payment at five levels of earnings</h2>

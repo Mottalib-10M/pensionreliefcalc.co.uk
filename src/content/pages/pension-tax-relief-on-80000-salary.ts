@@ -26,12 +26,12 @@ export default definePage({
     { q: 'Is it worth asking my employer to share its NI saving?', a: `Often. On ${h.m(12000)} of salary sacrifice the employer saves ${h.m(h.relief({ salary: 80000, method: 'sacrifice', amount: 12000 }).employerNiSaved)} of its own NI a year. Some employers add all of it to your pension, some half, some none. From April 2029 the saving shrinks to the NI on the first ${h.m(h.P.sacrifice.niCap)}, so check any promise in writing.` },
   ],
   body: (h) => {
-    const g = [5000, 12000, 20000, 29730, 40000];
+    const g = [5000, 12000, 20000, 80000 - h.higherStart, 40000];
     const sc = g.map((x) => { const r = h.R.compareMethods(80000, x, 'scotland'), u = h.R.compareMethods(80000, x); return [h.m(x), h.m(u.netpay.netCost), h.m(r.netpay.netCost), h.pc(u.netpay.effectiveRate), h.pc(r.netpay.effectiveRate)]; });
     const a = h.relief({ salary: 80000, method: 'sacrifice', amount: 12000 }), b = h.relief({ salary: 80000, method: 'sacrifice', amount: 12000, after2029: true });
     return `<h2>All three methods at ${h.m(80000)}</h2>
 ${h.methodsTable(80000, g)}
-<p>Up to ${h.m(29730)} gross the relief rate stays at 40%, and the last row shows it drop once contributions reach into income taxed at 20%. The gap between net pay and sacrifice is the 2% employee NI, small at this salary. The gap between now and April 2029 grows with the size of the sacrifice.</p>
+<p>Up to ${h.m(80000 - h.higherStart)} gross the relief rate stays at 40%, and the last row shows it drop once contributions reach into income taxed at 20%. The gap between net pay and sacrifice is the 2% employee NI, small at this salary. The gap between now and April 2029 grows with the size of the sacrifice.</p>
 <h2>England against Scotland on the same salary</h2>
 ${h.table(['Into the pension', 'Cost, rest of UK', 'Cost, Scotland', 'Relief, rest of UK', 'Relief, Scotland'], sc, `Net pay arrangement, ${h.P.taxYear}. Scottish bands from GOV.UK; relief equals the Income Tax saved.`, ['l', 'r', 'r', 'r', 'r'])}
 <p>The first ${h.m(80000 - 75000)} of a Scottish contribution is relieved at 45%, the next part at 42%, then 21% in the intermediate band. A Scottish taxpayer therefore saves more on a moderate contribution but reaches lower rates sooner on a large one.</p>

@@ -24,7 +24,19 @@ const ui = t(lang);
 const path = route(page.id, lang);
 const h = helpers(true);
 const faqs = page.faqs(h);
-const parts = page.body(h).split(/<!--tool:([a-z0-9:-]+)(?:\|(\{.*?\}))?-->/);
+// Folded sections (naive testers 2026-11-09): the first H2 section stays open; every later section without a
+// calculator becomes a <details> under its own H2. The text stays in the HTML, the phone page gets short.
+const plier = (html: string) => {
+  let vus = 0;
+  return html.split(/(?=<h2[\s>])/).map((sec) => {
+    const mh = sec.match(/^<h2([^>]*)>([\s\S]*?)<\/h2>/);
+    if (!mh) return sec;
+    vus += 1;
+    if (vus === 1 || sec.includes('<!--tool:')) return sec;
+    return `<details class="pli"><summary><h2${mh[1]}>${mh[2]}</h2></summary><div class="pli-corps">${sec.slice(mh[0].length)}</div></details>`;
+  }).join('');
+};
+const parts = plier(page.body(h)).split(/<!--tool:([a-z0-9:-]+)(?:\|(\{.*?\}))?-->/);
 const jsonLd = [articleSchema({ title: page.h1, description: page.description, path, lang }), webPageSchema({ name: page.h1, description: page.description, path, lang }), breadcrumbSchema([{ name: ui.breadcrumbHome, path: route('home', lang) }, { name: page.nav, path }])];
 if (page.tool) jsonLd.push(webApplicationSchema({ name: page.h1, description: page.description, path, lang }));
 if (faqs.length) jsonLd.push(faqSchema(faqs, lang));
@@ -41,7 +53,7 @@ const reading = false;
       <p class="kicker">{groupLabel(page.group)}</p>
       <h1 class="mt-1 text-[1.75rem] font-bold text-navy-900 max-sm:leading-tight sm:text-3xl md:text-4xl">{page.h1}</h1>
       <p class="mt-2 text-base text-navy-700 sm:text-lg">{page.intro}</p>
-      <p data-chrome class="mt-1 text-xs text-navy-600">{ui.independent}</p>
+      <p data-chrome class="mt-1 text-xs text-navy-600">{ui.independent} <a href={`${route('home', lang)}#start`} class="font-medium text-accent-700 underline underline-offset-2">{ui.startHere}</a></p>
     </header>
     {/* Tool page: the calculator comes straight after the title so its first field sits on the first
          screen (check-premier-ecran); the citable block follows it. Reading page: block first. */}

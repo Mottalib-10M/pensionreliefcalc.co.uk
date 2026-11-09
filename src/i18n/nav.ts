@@ -4,7 +4,7 @@ import type { Group } from '../lib/guide-types';
 export interface NavLink { href: string; label: string } export interface NavCategory { label: string; links: NavLink[] }
 const CORE: Record<string, string> = { home: 'Pension tax relief calculator', method: 'How the sums are done', about: 'About', widget: 'Embed the calculator', contact: 'Contact', editorial: 'Editorial policy', privacy: 'Privacy', terms: 'Legal notice', cookies: 'Cookies' };
 const GROUP_LABEL: Record<Group, string> = { relief: 'Tax relief', allowances: 'Allowances', sacrifice: 'Sacrifice', retirement: 'Retirement', salary: 'By salary' };
-const GROUP_LONG: Record<Group, string> = { relief: 'Tax relief on contributions', allowances: 'Annual allowance and carry forward', sacrifice: 'Salary sacrifice: pension and car', retirement: 'Pension pot and drawdown', salary: 'Relief by salary' };
+const GROUP_LONG: Record<Group, string> = { relief: 'Tax relief: how it works and how to claim', allowances: 'Allowances: annual allowance and carry forward', sacrifice: 'Sacrifice: pension and car', retirement: 'Retirement: pension pot and drawdown', salary: 'By salary: relief worked out' };
 export const GROUPS_ORDER: Group[] = ['relief', 'allowances', 'sacrifice', 'retirement', 'salary'];
 export const groupLabel = (g: Group, long = true) => (long ? GROUP_LONG[g] : GROUP_LABEL[g]);
 export const label = (id: string, _lang: Locale = 'en') => CORE[id] ?? pageById(id)?.nav ?? id;

@@ -19,7 +19,7 @@ const nationIn = { id: 'nation', label: 'Where you pay Income Tax', def: 0, opti
 
 const SPECS: Record<string, MiniSpec> = {
   'relief-salary': {
-    title: 'What £1 in your pension costs on this salary', cta: 'Open the full relief calculator', ctaPage: 'home',
+    title: 'What the same contribution costs by each method', cta: 'Open the full relief calculator', ctaPage: 'home',
     inputs: [salary(50000), money('gross', 'Gross amount into the pension a year', 5000, 'Including tax relief'), nationIn],
     run: (v) => { const c = compareMethods(v.salary, v.gross, nation(v.nation));
       return { head: ['Cost by relief at source', m(c.ras.netCost)], rows: [['Cost by net pay', m(c.netpay.netCost)], ['Cost by salary sacrifice', m(c.sacrifice.netCost)], ['Relief by relief at source', pc(c.ras.effectiveRate)], ['Your band before the contribution', BAND_LABEL[c.ras.topBandBefore]]] }; },
@@ -35,7 +35,7 @@ const SPECS: Record<string, MiniSpec> = {
     title: 'The higher rate relief to claim back', cta: 'See the whole relief by method', ctaPage: 'home',
     inputs: [salary(68000, 'Taxable income before contributions'), money('paid', 'You paid into a relief at source pension', 6000, 'From your bank account, this tax year'), nationIn],
     run: (v) => { const r = relief({ salary: v.salary, nation: nation(v.nation), method: 'ras', amount: v.paid });
-      return { head: ['To claim from HMRC', m(r.claim)], rows: [['Gross contribution', m(r.gross)], ['Added by the provider', m(r.providerTopUp)], ['Real cost once claimed', m(r.netCost)], ['Basic rate band extended by', m(r.relievable)]],
+      return { head: ['Extra you must claim yourself from HMRC', m(r.claim)], rows: [['Gross contribution (what you paid plus the provider’s top-up)', m(r.gross)], ['Already added by your provider', m(r.providerTopUp)], ['Real cost once claimed', m(r.netCost)], ['How HMRC gives it: your 20% band widened by', m(r.relievable)]],
         note: r.claim === 0 ? 'Nothing to claim: all of your income sits in the basic rate band, or below the Scottish intermediate rate.' : undefined }; },
   },
   scot: {

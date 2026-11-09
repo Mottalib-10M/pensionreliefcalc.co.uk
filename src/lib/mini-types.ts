@@ -18,4 +18,7 @@ export interface ToolOut {
   /** One line for the bar kept at the bottom of a phone screen. */
   sticky: string;
 }
-export interface ToolSpec { inputs: MiniInput[]; advancedLabel?: string; run: (v: Record<string, number>, touched?: Record<string, boolean>) => ToolOut; footnote: string }
+export interface ToolSpec { inputs: MiniInput[]; advancedLabel?: string;
+  /** Line under the form with a link to the page that answers a field the reader may not know (naive testers, 2026-11-09). */
+  formNote?: { text: string; link: string; page: string; anchor?: string };
+  run: (v: Record<string, number>, touched?: Record<string, boolean>) => ToolOut; footnote: string }
