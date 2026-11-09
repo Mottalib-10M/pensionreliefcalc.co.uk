@@ -70,7 +70,7 @@ const timeline = [
 <PageLayout title="Pension Tax Relief Calculator 2026/27: SIPP and Sacrifice" description="Pension tax relief calculator 2026/27: what a contribution costs by relief at source, net pay or salary sacrifice, the claim back, Scotland and the 2029 change." lang={lang} jsonLd={jsonLd} faqs={faqs} faqOuverte={0}>
   <header class="mb-3">
     <h1 class="text-[1.75rem] font-bold text-navy-900 max-sm:leading-tight sm:text-3xl md:text-4xl">Pension tax relief calculator: what your contribution really costs, 2026/27</h1>
-    <p class="mt-2 text-base text-navy-700 sm:text-lg">Every {m(100 * (1 - P.relief.rasRate))} you pay into a pension becomes {m(100)}: the government adds the tax. Pay tax above 20% and you claim more back from HMRC (HM Revenue and Customs, the tax office); through salary sacrifice you save National Insurance (NI) too. Put in your salary and what you pay to see your own figures.</p>
+    <p class="mt-2 text-base text-navy-700 sm:text-lg">With pension tax relief, every {m(100 * (1 - P.relief.rasRate))} you pay into a pension becomes {m(100)}: the government adds the tax. Pay tax above 20% and you claim more back from HMRC (HM Revenue and Customs, the tax office); through salary sacrifice you save National Insurance (NI) too. Put in your salary and what you pay to see your own figures.</p>
     <p data-chrome class="mt-1 text-xs text-navy-600">{ui.independent} <a href="#start" class="font-medium text-accent-700 underline underline-offset-2">{ui.startHere}</a></p>
   </header>
   <div data-outil class="mb-4"><Tool tool={{ kind: 'tool:relief', props: { salary: 45000, amount: 3000, method: 0 } }} primary={true} /></div>
@@ -135,7 +135,7 @@ const timeline = [
     </ol>
     </div>
   </div></details>
-  <details class="pli"><summary><h2>Getting the relief you are owed</h2></summary><div class="pli-corps prose prose-slate max-w-none">
+  <details class="pli"><summary><h2>Getting the pension tax relief you are owed</h2></summary><div class="pli-corps prose prose-slate max-w-none">
     <p>Most of the relief in the UK system arrives without anyone asking. The gaps are predictable:</p>
     <ul>
       <li><strong>Higher rate taxpayers in relief at source schemes</strong> must claim the extra 20% or 25%, and in Scotland 22%, 25% or 28%. Many never do. Claims run four tax years back, so in {P.taxYear} the earliest year still open is 2022/23, until 5 April 2027 (<Fragment set:html={h.src('hmrc_claim', 'HMRC, claim tax relief on private pension payments')} />).</li>

@@ -28,7 +28,7 @@ export default definePage({
     const g = [5000, 10000, 15000, 25140, 35000, 60000];
     const rows = g.map((x) => { const r = h.relief({ salary: 125000, method: 'netpay', amount: x }); const s = h.relief({ salary: 125000, method: 'sacrifice', amount: x }); return [h.m(x), h.m(r.incomeTaxSaved), h.m(r.paAfter - r.paBefore), h.m(r.netCost), h.m(s.netCost), h.pc(r.effectiveRate)]; });
     const cf = h.A.carryForward([{ year: '2023/24', savings: 20000, member: true }, { year: '2024/25', savings: 25000, member: true }, { year: '2025/26', savings: 30000, member: true }], 100000);
-    return `<h2>Relief by size of contribution</h2>
+    return `<h2>Pension tax relief by size of contribution</h2>
 ${h.table(['Gross contribution', 'Income Tax saved', 'Allowance won back', 'Net pay cost', 'Sacrifice cost', 'Relief'], rows, `Salary of ${h.m(125000)}, ${h.P.taxYear}, England, Wales or Northern Ireland. Relief is the Income Tax saved over the gross contribution.`, ['l', 'r', 'r', 'r', 'r', 'r'])}
 <p>The relief rate stays at 60% up to ${h.m(25140)} because every pound in that range sits in the taper. After that it falls toward 40% as the extra contributions come out of income taxed at the higher rate with a full allowance already restored. At ${h.m(60000)}, the full standard annual allowance, the average relief is still close to half.</p>
 <h2>Using carry forward for a bigger payment</h2>

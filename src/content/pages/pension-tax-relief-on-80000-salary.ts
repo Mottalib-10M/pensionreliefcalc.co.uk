@@ -13,7 +13,7 @@ export default definePage({
   title: 'Pension Tax Relief on £80,000: Room for 40% and 45% Relief',
   description: 'Pension tax relief on an £80,000 salary in 2026/27: £29,730 of room at 40%, 45% on part of it in Scotland, and what sacrifice saves now and from April 2029.',
   h1: 'Pension tax relief on an £80,000 salary',
-  intro: 'The calculator opens on £80,000 with £12,000 a year through a net pay workplace scheme. Switch to relief at source, sacrifice or Scotland to compare the cost of the same contribution.',
+  intro: 'The pension tax relief calculator opens on £80,000 with £12,000 a year through a net pay workplace scheme. Switch to relief at source, sacrifice or Scotland to compare the cost of the same contribution.',
   resume: (h) => {
     const room = 80000 - h.higherStart;
     const r = h.relief({ salary: 80000, method: 'netpay', amount: 12000 });
@@ -29,7 +29,7 @@ export default definePage({
     const g = [5000, 12000, 20000, 80000 - h.higherStart, 40000];
     const sc = g.map((x) => { const r = h.R.compareMethods(80000, x, 'scotland'), u = h.R.compareMethods(80000, x); return [h.m(x), h.m(u.netpay.netCost), h.m(r.netpay.netCost), h.pc(u.netpay.effectiveRate), h.pc(r.netpay.effectiveRate)]; });
     const a = h.relief({ salary: 80000, method: 'sacrifice', amount: 12000 }), b = h.relief({ salary: 80000, method: 'sacrifice', amount: 12000, after2029: true });
-    return `<h2>All three methods at ${h.m(80000)}</h2>
+    return `<h2>Pension tax relief at ${h.m(80000)}, by all three methods</h2>
 ${h.methodsTable(80000, g)}
 <p>Up to ${h.m(80000 - h.higherStart)} gross the relief rate stays at 40%, and the last row shows it drop once contributions reach into income taxed at 20%. The gap between net pay and sacrifice is the 2% employee NI, small at this salary. The gap between now and April 2029 grows with the size of the sacrifice.</p>
 <h2>England against Scotland on the same salary</h2>

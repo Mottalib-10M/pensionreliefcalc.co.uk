@@ -13,7 +13,7 @@ export default definePage({
   title: 'Pension Contributions Over £100k: The 60% Tax Trap 2026/27',
   description: 'Pension contributions over £100k: why income from £100,000 to £125,140 is taxed at 60%, the contribution that clears it, bonuses, timing, Tax-Free Childcare',
   h1: 'Pension contributions over £100,000: getting out of the 60% band',
-  intro: 'Between £100,000 and £125,140 of income, each extra pound costs 60p in Income Tax because the Personal Allowance is withdrawn. A pension contribution reverses it. Here is how much, when and by which route.',
+  intro: 'Pension contributions over £100,000 of income undo the 60% band: between £100,000 and £125,140, each extra pound costs 60p in Income Tax because the Personal Allowance is withdrawn, and a contribution gives it back. Here is how much, when and by which route.',
   resume: (h) => {
     const g = h.R.contributionToReach100k(115000);
     const r = h.relief({ salary: 115000, method: 'netpay', amount: g });
@@ -34,7 +34,7 @@ ${h.table(['Adjusted net income', 'Gross contribution to reach £100,000', 'Paid
 <p>Up to ${h.m(h.I.paZeroAt)} the saving is 60% of the gross contribution in the rest of the UK and 67.5% in Scotland. From ${h.m(130000)}, the first ${h.m(130000 - h.I.paZeroAt)} of contribution comes out of income taxed at 45% (48% in Scotland), and only the next ${h.m(h.I.paZeroAt - 100000)} gets the 60% effect.</p>
 <h2>Which income counts</h2>
 <p>Adjusted net income starts from your total taxable income for the year: employment income and benefits in kind, self-employed profits, rental profits, pension income, savings interest and dividends. From that you take off gross Gift Aid donations and gross pension contributions paid by relief at source, plus some trading losses. Net pay contributions and salary sacrifice already reduce employment income, so they are taken off without a claim. Employer contributions are not your income at all. GOV.UK's ${h.src('gov_relief', 'pension tax relief page')} explains the relief side, and HMRC's ${h.src('hmrc_taper', 'tapered annual allowance steps')} use a related figure, adjusted income, for a different test.</p>
-<h2>Three ways to make the contribution</h2>
+<h2>Three ways to make pension contributions over £100,000</h2>
 <h3>Salary or bonus sacrifice</h3>
 <p>The cleanest route. Your contractual pay falls by the amount, your payroll tax and NI follow, and adjusted net income falls without any claim. It must be agreed before the pay or bonus is earned. From 6 April 2029, NI will apply to employee sacrifice above ${h.m(h.P.sacrifice.niCap)} a year under announced plans, but the Income Tax effect, which is what clears the 60% band, stays.</p>
 <h3>Net pay through your workplace scheme</h3>

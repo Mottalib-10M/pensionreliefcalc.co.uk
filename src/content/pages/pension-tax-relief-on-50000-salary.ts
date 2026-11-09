@@ -28,7 +28,7 @@ export default definePage({
     const g = [1000, 2500, 5000, 8000, 12000];
     const sc = g.map((x) => { const r = h.R.compareMethods(50000, x, 'scotland'); return [h.m(x), h.m(r.ras.netCost), h.m(r.sacrifice.netCost), h.pc(r.ras.effectiveRate)]; });
     const bonus = h.relief({ salary: 56000, method: 'ras', amount: 4800 });
-    return `<h2>Every method, England, Wales and Northern Ireland</h2>
+    return `<h2>Pension tax relief by method, England, Wales and Northern Ireland</h2>
 ${h.methodsTable(50000, g)}
 <p>Relief at source and net pay cost the same here because the whole contribution is relieved at 20%. Salary sacrifice is cheaper by the 8% employee NI, and the April 2029 column shows the cost once NI applies above ${h.m(h.P.sacrifice.niCap)}. Contributions large enough to take taxable pay below ${h.m(h.P.ni.primaryThreshold)} would stop saving NI, but no row here gets close.</p>
 <h2>The same salary in Scotland</h2>

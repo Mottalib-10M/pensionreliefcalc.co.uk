@@ -18,7 +18,7 @@ const car = C.sacrificeCar({ salary: 60000, monthly: 500, listPrice: 40000, year
 const sources = Object.entries(P.sources) as Array<[string, { url: string; label: { en: string } }]>;
 ---
 <PageLayout title="Pension Tax Relief Method 2026/27: Rules, Order and Tests" description="How Pension Relief Calc works out pension tax relief for 2026/27: tax and NI rules, the three methods, Scotland, allowances, car tax, tests and omissions." lang={lang} jsonLd={[articleSchema({ title: 'How the pension tax relief figures are worked out', description: 'Method of Pension Relief Calc', path: route('method', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Method', path: route('method', lang) }])]} breadcrumbs={[{ label: 'Method' }]}>
-  <header class="mb-6"><p class="kicker">Method</p><h1 class="mt-1 text-3xl font-bold text-navy-900 md:text-4xl">How the sums are done</h1><p class="mt-3 text-lg text-navy-700">Every figure on the site comes from one tested engine fed by one parameter file. This page lists the rules it applies, in order, the checks it passes and what it leaves out. Rules read on <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time>.</p></header>
+  <header class="mb-6"><p class="kicker">Method</p><h1 class="mt-1 text-3xl font-bold text-navy-900 md:text-4xl">How the pension tax relief sums are done</h1><p class="mt-3 text-lg text-navy-700">Every pension tax relief figure on the site comes from one tested engine fed by one parameter file. This page lists the rules it applies, in order, the checks it passes and what it leaves out. Rules read on <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time>.</p></header>
   <div class="prose prose-slate max-w-none">
     <h2>1. Income Tax, twice</h2>
     <p>Relief is never applied as a flat percentage. The engine works out your whole Income Tax for {P.taxYear} without the contribution and again with it, and shows the difference. That catches every threshold a contribution crosses: the end of the higher rate band, the Personal Allowance taper, a Scottish band boundary.</p>
@@ -27,7 +27,7 @@ const sources = Object.entries(P.sources) as Array<[string, { url: string; label
       <li><strong>Rest of the UK</strong>: basic rate 20% on the first {m(I.ruk[0].upTo!)} of taxable income, higher rate 40% up to {m(I.ruk[1].upTo!)}, additional rate 45% above.</li>
       <li><strong>Scotland</strong>: starter 19% on the first {m(I.scotland[0].upTo!)} of taxable income, basic 20% to {m(I.scotland[1].upTo!)}, intermediate 21% to {m(I.scotland[2].upTo!)}, higher 42% to {m(I.scotland[3].upTo!)}, advanced 45% to {m(I.scotland[4].upTo!)}, top 48% above. These are the GOV.UK income bands converted to taxable income; the tests check the published thresholds of {m(43663)} and {m(75001)}.</li>
     </ul>
-    <h2>2. The three methods</h2>
+    <h2>2. The three pension tax relief methods</h2>
     <ul>
       <li><strong>Relief at source</strong>: the amount you pay is grossed up by 20%; the provider's top-up is 20% of the gross amount within the relief limit. The extra relief is the tax saved by extending the basic rate band (and, in Scotland, every band except the starter band) by the gross contribution. A Scottish starter rate taxpayer keeps the 20%.</li>
       <li><strong>Net pay</strong>: the contribution is deducted from taxable pay. If taxable pay is nil afterwards, the HMRC top-up of 20% for low earners is added, as paid since 2024/25.</li>

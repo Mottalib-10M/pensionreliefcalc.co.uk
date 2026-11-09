@@ -13,7 +13,7 @@ export default definePage({
   title: 'Money Purchase Annual Allowance 2026/27: £10,000 Triggers',
   description: 'Money purchase annual allowance for 2026/27: the £10,000 limit after flexible access, what triggers it and what does not, no carry forward, and the charge',
   h1: 'Money purchase annual allowance: the £10,000 limit after you start drawing',
-  intro: 'Once you take flexible income from a defined contribution pension, the amount you can save into such pensions each year without a tax charge falls from £60,000 to £10,000. This guide sets out when that happens and what it costs.',
+  intro: 'Once you take flexible income from a defined contribution pension, the money purchase annual allowance cuts what you can save into such pensions each year without a tax charge from £60,000 to £10,000. This guide sets out when that happens and what it costs.',
   resume: (h) => {
     const Y = h.P.allowances.years['2026/27'];
     const a = h.A.annualAllowance({ income: 48000, own: 9000, method: 'ras', employer: 4000, flexiblyAccessed: true });
@@ -33,7 +33,7 @@ export default definePage({
 <p>HMRC's guidance lists the events that bring in the MPAA. The common ones are:</p>
 <ul><li>taking income from a flexi-access drawdown fund, even a single small payment;</li><li>taking an uncrystallised funds pension lump sum (UFPLS), where each payment is a quarter tax free and three quarters taxed;</li><li>buying a flexible annuity whose payments can go down;</li><li>taking income from a capped drawdown arrangement above the cap, which converts it to flexi-access.</li></ul>
 <p>Events that do not trigger it include taking only the tax-free lump sum, buying a lifetime annuity with payments that cannot fall, drawing a defined benefit pension, and small pot lump sums. Since ${h.P.allowances.lifetimeAllowanceAbolished.slice(0, 4)} the tax-free part of all lump sums is limited by the ${h.m(h.P.allowances.lumpSumAllowance)} lump sum allowance (${h.src('gov_lsa', 'GOV.UK')}), a separate rule.</p>
-<h2>The limit over the years</h2>
+<h2>The money purchase annual allowance over the years</h2>
 ${h.table(['Tax year', 'MPAA', 'Standard annual allowance'], hist, 'HMRC, pension schemes rates. Years before 2019/20 are not listed on that page.', ['l', 'r', 'r'])}
 <p>The MPAA was ${h.m(4000)} in every year the page lists from 2019/20 to 2022/23, and went back up to ${h.m(10000)} on 6 April 2023, when the standard allowance rose to ${h.m(60000)}. Someone who triggered it years ago still has it today, at the current level.</p>
 <h2>How the charge is worked out</h2>

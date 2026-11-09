@@ -28,7 +28,7 @@ export default definePage({
     const g = [10000, 24860, 35000, 50000, 60000];
     const rows = g.map((x) => { const r = h.relief({ salary: 150000, method: 'ras', amount: x * 0.8 }); return [h.m(x), h.m(x * 0.8), h.m(r.providerTopUp), h.m(r.claim), h.m(r.netCost), h.pc(r.effectiveRate)]; });
     const sc = h.relief({ salary: 150000, nation: 'scotland', method: 'ras', amount: 16000 });
-    return `<h2>Relief at source in three bands</h2>
+    return `<h2>Pension tax relief at source in three bands</h2>
 ${h.table(['Gross into the pension', 'Paid from your bank', 'Added by provider', 'Claimed from HMRC', 'Real cost', 'Relief'], rows, `Salary of ${h.m(150000)}, ${h.P.taxYear}, England, Wales or Northern Ireland, relief at source.`, ['l', 'r', 'r', 'r', 'r', 'r'])}
 <p>The first ${h.m(24860)} gross is relieved at 45%, which is the additional rate slice. The next ${h.m(25140)} is relieved at 60% because it restores the Personal Allowance, so the average rate actually rises at first as the contribution grows. Past ${h.m(50000)} the extra relief is 40%. A contribution of ${h.m(50000)} gross therefore costs a little over half of its face value.</p>
 <h2>A Scottish taxpayer on ${h.m(150000)}</h2>

@@ -13,7 +13,7 @@ export default definePage({
   title: 'Salary Sacrifice Car Calculator: Real Cost of an EV 2026/27',
   description: 'Salary sacrifice car calculator: the real monthly cost of an electric or hybrid car after tax and NI saved and company car tax of 4 to 9%, 2026/27 to 2029/30.',
   h1: 'Salary sacrifice car calculator: what an electric car really costs you a month',
-  intro: 'Enter your salary, the monthly amount in the scheme quote and the car’s list price. You get the net monthly cost after the tax and NI you save and the benefit in kind tax you pay.',
+  intro: 'Enter your salary, the monthly amount in the salary sacrifice quote and the car’s list price. You get the net monthly cost after the tax and NI you save and the benefit in kind tax you pay.',
   resume: (h) => {
     const c = h.C.sacrificeCar({ salary: 55000, monthly: 450, listPrice: 42000, year: '2026/27', kind: 'zero' });
     return `A car scheme takes a fixed monthly amount out of your gross salary, so you save Income Tax and National Insurance on it, and in return you pay company car tax on the benefit in kind. For an electric car the taxable benefit is the list price times an appropriate percentage set in ${h.src('leg_itepa139', 'section 139 of the Income Tax (Earnings and Pensions) Act 2003')}: ${h.pc(h.P.cars.zero['2026/27'])} in ${h.P.taxYear}, ${h.pc(h.P.cars.zero['2027/28'])} in 2027/28, ${h.pc(h.P.cars.zero['2028/29'])} in 2028/29 and ${h.pc(h.P.cars.zero['2029/30'])} in 2029/30. Cars emitting up to ${h.P.sacrifice.carMaxCo2NormalRules} g/km keep these normal rules under salary sacrifice (${h.src('hmrc_ss', 'HMRC')}); others are taxed on the salary given up if that is higher. On ${h.m(55000)}, giving up ${h.m(450)} a month for a ${h.m(42000)} electric car saves ${h.m(c.taxSaved / 12)} of tax and ${h.m(c.niSaved / 12)} of NI a month and adds ${h.m(c.bikTax / 12)} of car tax, for a real cost of ${h.m(c.netMonthly)} a month instead of ${h.m(450)}.`;
@@ -31,7 +31,7 @@ export default definePage({
     const hy = h.C.sacrificeCar({ salary: 55000, monthly: 450, listPrice: 42000, year: '2026/27', kind: 'hybrid', range: 40 });
     const hy2 = h.C.sacrificeCar({ salary: 55000, monthly: 450, listPrice: 42000, year: '2028/29', kind: 'hybrid', range: 40 });
     const er = h.C.sacrificeCar({ salary: 55000, monthly: 450, listPrice: 42000, year: '2026/27', kind: 'zero' });
-    return `<h2>Monthly cost by salary and tax year</h2>
+    return `<h2>Monthly cost of a salary sacrifice car, by salary and tax year</h2>
 <p>The table keeps the same car and the same ${h.m(450)} a month, and changes salary and year. A basic rate taxpayer saves 20% tax and 8% NI; above ${h.m(h.higherStart)} the saving is 40% and 2%, and between ${h.m(100000)} and ${h.m(h.I.paZeroAt)} the Personal Allowance taper adds to it. The rise in the appropriate percentage adds a few pounds a month each year.</p>
 ${h.table(['Salary', ...yrs.map((y) => `Real cost ${y}`)], rows, `${h.m(42000)} electric car, ${h.m(450)} a month sacrificed, England, Wales or Northern Ireland. ${h.P.taxYear} tax bands kept for later years; percentages from ITEPA 2003 s.139 as amended.`, ['l', 'r', 'r', 'r', 'r'])}
 <h2>Electric against plug-in hybrid</h2>

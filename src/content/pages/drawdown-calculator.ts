@@ -13,7 +13,7 @@ export default definePage({
   title: 'Pension Drawdown Calculator: How Long Your Pot Will Last',
   description: 'Pension drawdown calculator: the age your pot runs out at a yearly withdrawal rising with inflation, the income that lasts to 95, and the MPAA once you draw.',
   h1: 'Pension drawdown calculator: how long the money lasts',
-  intro: 'Enter the pot left after any tax-free cash, the yearly withdrawal and your age. The calculator shows the age the pot runs out and the withdrawal that would last to 95.',
+  intro: 'Enter the pot left after any tax-free cash, the yearly withdrawal and your age into this drawdown calculator. It shows the age the pot runs out and the withdrawal that would last to 95.',
   resume: (h) => {
     const d = h.F.drawdown({ pot: 300000, withdrawal: 18000, growth: 0.05, charges: 0.005, inflation: 0.025, startAge: 66 });
     const to95 = h.F.levelIncome(300000, 66, 95, d.realRate);
@@ -35,7 +35,7 @@ export default definePage({
 <p>The withdrawal rate is the first year's income as a share of the pot. After that the income rises with inflation, here 2.5% a year. Three growth rates are shown before charges of 0.5%.</p>
 ${h.table(['First-year withdrawal', 'Growth 3%', 'Growth 5%', 'Growth 7%'], rows, 'Years of withdrawals before the pot is empty, steady returns. Engine of this site.', ['l', 'r', 'r', 'r'])}
 <p>Taking 4% with 5% growth gives ${y4} years of income; taking 6% gives ${y6}. Small changes in the withdrawal rate move the end date by many years. The table assumes the same return every year, so it shows the average path; years of losses at the start make it shorter, which is called sequence risk.</p>
-<h2>Drawdown and tax</h2>
+<h2>Pension drawdown and tax</h2>
 <p>Withdrawals sit on top of the State Pension in your tax calculation. Someone with the full new State Pension of ${h.m(h.F.fullStatePension())} a year has only ${h.m(h.I.personalAllowance - h.F.fullStatePension())} of Personal Allowance left, so most drawdown income is taxed at 20% at least. Keeping withdrawals below ${h.m(h.higherStart)} of total income avoids the higher rate. The ${h.src('gov_lsa', 'lump sum allowance')} caps the tax-free cash at ${h.m(h.P.allowances.lumpSumAllowance)} for most people. The calculator leaves tax out so that the life of the pot stays clear; ${h.src('gov_taxpension', 'GOV.UK')} explains how pension income is taxed.</p>
 <h2>Next steps</h2>
 <p>To see what pot you are on course for, use the ${h.a('pension-calculator', 'pension calculator')}. If you plan to keep working and saving after you start drawing, read the ${h.a('money-purchase-annual-allowance', 'guide to the money purchase annual allowance')} first: the ${h.m(h.P.allowances.years['2026/27'].mpaa!)} limit applies from the day after your first flexible withdrawal. Free guidance on drawdown is offered by Pension Wise, the government service, to anyone aged 50 or over with a defined contribution pension.</p>

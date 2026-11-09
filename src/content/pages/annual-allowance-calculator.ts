@@ -13,7 +13,7 @@ export default definePage({
   title: 'Pension Annual Allowance Calculator 2026/27: Taper, Charge',
   description: 'Pension annual allowance calculator 2026/27: threshold and adjusted income in HMRC’s order, the taper down to £10,000, the MPAA and the charge on any excess.',
   h1: 'Pension annual allowance calculator: your tapered allowance and any charge for 2026/27',
-  intro: 'The calculator opens on a high earner with £280,000 of income, a net pay contribution and employer money. Change the figures to see the allowance HMRC’s steps give you and the charge on any excess.',
+  intro: 'This pension annual allowance calculator opens on a high earner with £280,000 of income, a net pay contribution and employer money. Change the figures to see the allowance HMRC’s steps give you and the charge on any excess.',
   resume: (h) => {
     const Y = h.P.allowances.years['2026/27'];
     const a = h.A.annualAllowance({ income: 280000, own: 30000, method: 'netpay', employer: 20000 });
@@ -31,7 +31,7 @@ export default definePage({
     const rows = incs.map((inc) => { const a = h.A.annualAllowance({ income: inc, own: 20000, method: 'netpay', employer: 20000 }); return [h.m(inc), h.m(a.thresholdIncome), h.m(a.adjustedIncome), h.m(a.aa), h.m(a.chargeable), h.m(a.charge)]; });
     const ss = h.A.annualAllowance({ income: 230000, own: 40000, method: 'sacrifice', employer: 20000 });
     const rs = h.A.annualAllowance({ income: 230000, own: 40000, method: 'ras', employer: 20000 });
-    return `<h2>The taper, income by income</h2>
+    return `<h2>The tapered pension annual allowance, income by income</h2>
 <p>The table keeps the same savings, ${h.m(20000)} through net pay and ${h.m(20000)} from the employer, and moves income up. The taper only bites once adjusted income passes ${h.m(Y.adjusted)}; it reaches its floor of ${h.m(Y.minTaper)} at ${h.m(Y.adjusted + 2 * (Y.aa - Y.minTaper))} of adjusted income.</p>
 ${h.table(['Income', 'Threshold income', 'Adjusted income', 'Allowance', 'Over it', 'Charge'], rows, `${h.P.taxYear}, England, Wales or Northern Ireland, no carry forward. Steps of ${h.src('hmrc_taper', 'HMRC, work out your tapered annual allowance')}, applied by this site's engine.`, ['l', 'r', 'r', 'r', 'r', 'r'])}
 <h2>Why the method of contribution changes threshold income</h2>

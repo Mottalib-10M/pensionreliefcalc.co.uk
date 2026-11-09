@@ -34,7 +34,7 @@ export default definePage({
     const ev = lease('zero'), ph = lease('hybrid', 45);
     const basic = h.C.sacrificeCar({ salary: 35000, monthly: 450, listPrice: 42000, year: '2026/27', kind: 'zero' });
     const add = h.C.sacrificeCar({ salary: 160000, monthly: 450, listPrice: 42000, year: '2026/27', kind: 'zero' });
-    return `<h2>Appropriate percentages by year</h2>
+    return `<h2>Electric car BIK rates by year</h2>
 ${h.table(['Car', ...yrs], rows, `ITEPA 2003 s.139 as amended by the Finance Act 2023 s.11 and the Finance Act 2025 ss.5 and 6; HMRC, ${'guide 480'}, appendix 2. Read on ${h.date(h.P.retrieved_at)}.`, ['l', 'r', 'r', 'r', 'r'])}
 <p>The rates for 2028/29 and 2029/30 were set two years ahead by the ${h.src('leg_fa25_6', 'Finance Act 2025')} so that leasing companies and employees could plan. The ${h.src('hmrc_480', 'HMRC guide 480')} shows how the percentage is chosen for each car, including the rounding of range.</p>
 <h2>A four-year lease from 2026/27</h2>

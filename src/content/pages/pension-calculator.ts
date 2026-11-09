@@ -13,7 +13,7 @@ export default definePage({
   title: 'Pension Calculator: How Much You Need, in Today’s Money',
   description: 'Pension calculator in today’s money: your pot at retirement, the income it pays with the State Pension, and the pot and monthly saving a target income needs.',
   h1: 'Pension calculator: how much you need, and what you are on course for',
-  intro: 'Enter your age, your pots and what goes in each month, then the yearly income you want. Everything is shown in today’s money, so £1 on the result buys what £1 buys now.',
+  intro: 'Enter your age, your pension pots and what goes in each month, then the yearly income you want. Everything is shown in today’s money, so £1 on the result buys what £1 buys now.',
   resume: (h) => {
     const r = h.F.projectPot({ age: 40, retireAge: 67, pot: 60000, monthly: 500, growth: 0.05, charges: 0.005, inflation: 0.025 });
     const sp = h.F.fullStatePension();
@@ -33,7 +33,7 @@ export default definePage({
     const rows = targets.map((t) => [h.m(t), h.m(h.F.potNeeded(t, 67, 95, 67, sp, rr)), h.m(h.F.potNeeded(t, 60, 95, 67, sp, rr)), h.m(h.F.potNeeded(t, 67, 95, 67, 0, rr))]);
     const ages = [25, 35, 45, 55];
     const rows2 = ages.map((a) => [String(a), h.m(h.F.projectPot({ age: a, retireAge: 67, pot: 0, monthly: 400, growth: 0.05, charges: 0.005, inflation: 0.025 }).pot)]);
-    return `<h2>The pot a target income needs</h2>
+    return `<h2>The pension pot a target income needs</h2>
 <p>The figures below assume a real return of ${h.pc(rr, 1)} a year after charges and inflation, and income paid until 95. They are before Income Tax: pension income above the Personal Allowance is taxed, as ${h.src('gov_taxpension', 'GOV.UK explains')}, and a quarter of the pot can usually be taken tax free up to the ${h.m(h.P.allowances.lumpSumAllowance)} lump sum allowance.</p>
 ${h.table(['Yearly income wanted', 'Retire at 67', 'Retire at 60', 'At 67, no State Pension'], rows, `Pot needed in today's money. Full new State Pension of ${h.m(sp)} a year from 67. Engine of this site; assumptions in the calculator's advanced fields.`, ['l', 'r', 'r', 'r'])}
 <p>Retiring at 60 costs much more than the seven extra years of income, because the pot alone pays everything until the State Pension starts. The last column shows how much the State Pension is worth: replacing it with a private pot would take a large sum.</p>

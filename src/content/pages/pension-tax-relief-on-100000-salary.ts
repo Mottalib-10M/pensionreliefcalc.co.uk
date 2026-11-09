@@ -36,7 +36,7 @@ ${h.table(['Adjusted net income', 'Gross contribution needed', 'Income Tax saved
 <h2>Where to go next</h2>
 <p>Contributions by relief at source must be claimed to reduce adjusted net income in the tax calculation, through Self Assessment or ${h.src('hmrc_claim', 'HMRC’s claim service')}. Relief is limited to your earnings for the year (${h.src('leg_fa04_190', 'Finance Act 2004, section 190')}), which is rarely a constraint here. The ${h.a('pension-contributions-over-100k', 'guide to pension contributions over £100,000')} covers timing, bonuses and the end of the taper. The ${h.a('pension-tax-relief-on-125000-salary', '£125,000 page')} shows the case where the whole allowance has gone.</p>
 <p>One more case is common at this salary: a bonus paid in March that lifts income above ${h.m(100000)} for a single tax year. A relief at source payment made before 6 April, equal to the gross amount over the line, brings adjusted net income back down for that year once the claim is made. The calculator shows the cost of that payment for any income you enter.</p>
-<h2>Net pay, relief at source or sacrifice at this level</h2>
+<h2>Pension tax relief at this level: net pay, relief at source or sacrifice</h2>
 <p>All three methods give the same Income Tax result once any claim is made, because each one reduces adjusted net income by the gross contribution. The differences are in NI and in timing. Sacrifice saves 2% employee NI and up to 15% for the employer; net pay gives the relief on payday; relief at source needs a claim, and until it is processed your tax code may collect too much. For a payment meant to keep income under ${h.m(100000)}, the method that acts within the same tax year without paperwork is often the simplest.</p>`;
   },
 });

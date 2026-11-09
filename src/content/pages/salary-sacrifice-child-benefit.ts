@@ -31,7 +31,7 @@ export default definePage({
     const rows = incs.map((i) => [h.m(i), h.m(h.R.hicbc(i, 1)), h.m(h.R.hicbc(i, 2)), h.m(h.R.hicbc(i, 3))]);
     const gain = [[1, 72000, 8000], [2, 72000, 8000], [3, 72000, 8000], [2, 80000, 20000]].map(([k, i, g]) => { const cut = h.R.hicbc(i, k) - h.R.hicbc(i - g, k); const tax = h.tax(i) - h.tax(i - g); return [String(k), h.m(i), h.m(g), h.m(cut), h.m(tax), h.pc((cut + tax) / g)]; });
     const ss = h.relief({ salary: 72000, method: 'sacrifice', amount: 8000 });
-    return `<h2>The charge at each income</h2>
+    return `<h2>The Child Benefit Charge at each income</h2>
 ${h.table(['Adjusted net income', 'One child', 'Two children', 'Three children'], rows, `High Income Child Benefit Charge, ${h.P.taxYear}. Child Benefit at the weekly rates times 52; charge of 1% per ${h.m(h.P.childBenefit.hicbcStep)} above ${h.m(h.P.childBenefit.hicbcFrom)}, rounded down.`, ['l', 'r', 'r', 'r'])}
 <p>The charge rises in steps of ${h.m(h.P.childBenefit.hicbcStep)}, one per cent at a time, until it equals the whole benefit at ${h.m(h.P.childBenefit.hicbcTo)}. These thresholds apply from the 2024/25 tax year; up to 2023/24 the charge started at ${h.m(50000)}, as GOV.UK still notes for earlier years.</p>
 <h2>What a contribution saves</h2>
