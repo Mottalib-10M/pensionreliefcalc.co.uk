@@ -1,0 +1,21 @@
+---
+/** Embeddable calculator (iframe): no navigation, noindex, out of the sitemap (astro.config). */
+import '../../styles/global.css';
+import Calc from '../../components/calc/Calc';
+import { SITE_URL, SITE_NAMES } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pension tax relief calculator 2026/27 (widget)</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={`${SITE_URL}/en/`} />
+  </head>
+  <body class="bg-white p-2 text-navy-900">
+    <Calc client:load kind="relief" embed={true} methodHref={`${SITE_URL}${route('method', 'en')}`} />
+    <p class="mt-2 text-center text-xs text-navy-600">Independent tool by <a href={`${SITE_URL}/en/`} target="_blank" rel="noopener" class="underline">{SITE_NAMES.en}</a>, not a government service · pension tax relief 2026/27, worked out in your browser</p>
+    <p class="mt-1 text-center text-xs text-navy-600">Contains public sector information licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="nofollow noopener" class="underline">Open Government Licence v3.0</a>.</p>
+  </body>
+</html>

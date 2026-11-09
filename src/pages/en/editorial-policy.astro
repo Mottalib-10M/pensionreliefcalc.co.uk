@@ -1,0 +1,26 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { AUTHOR_NAME, CONTACT_EMAIL, LAST_UPDATED, SITE_NAMES } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+const lang = 'en';
+---
+<PageLayout title={`Editorial policy of ${SITE_NAMES[lang]}: law, tests, corrections`} description="Which laws and official pages Pension Relief Calc uses for pension tax relief, which sources it refuses, how the engine is tested, how announced rules are dated and how errors are fixed." lang={lang} noindex={true} breadcrumbs={[{ label: 'Editorial policy' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none">
+    <h1>Editorial and corrections policy</h1>
+    <p>People use these figures to decide how much to pay into a pension, whether to sign up for salary sacrifice or a car scheme, and whether to claim relief from HMRC. A rate in the wrong band or an allowance applied in the wrong order changes the answer, so every figure on the site points back to the law or the official page it came from.</p>
+    <h2>Who is responsible</h2><p>{AUTHOR_NAME}, reachable at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+    <h2>The sources we use</h2>
+    <ul>
+      <li>legislation.gov.uk for the law: the Finance Act 2004 (sections 188 to 192, 228A), the Income Tax (Earnings and Pensions) Act 2003 section 139 and the Finance Acts 2023 and 2025 that amend it;</li>
+      <li>GOV.UK and HMRC for rates, thresholds and guidance: Income Tax rates, Scottish Income Tax, rates and thresholds for employers, pension schemes rates, the taper, carry forward and MPAA guidance, the net pay top-up, Child Benefit and the charge;</li>
+      <li>HM Treasury publications for announced policy: the April 2029 salary sacrifice change and the Budget of 28 October 2026.</li>
+    </ul>
+    <h2>Sources we refuse</h2><p>Pension providers, platforms, advisers, car leasing firms and other calculators never provide a figure here, however well they rank. We read them to see what they leave out, never to copy them.</p>
+    <h2>Rules that are not yet in force</h2><p>An announced change is shown with its date and labelled as announced: the April 2029 salary sacrifice cap and the 2030/31 company car rates are policy, not law, when this page was written. Rates for 2027/28 onwards are not used except where already in law.</p>
+    <h2>Testing</h2><p>Every build runs the engine tests: GOV.UK's relief at source example, the Scottish extra relief rates, the net pay top-up, the Personal Allowance taper, the annual allowance taper at both ends, the MPAA, carry forward order and the company car percentages for each year. A failing test stops the build.</p>
+    <h2>Review</h2><p>Rates and allowances change at fiscal events and take effect on 6 April. The parameter file is re-read by hand after a Budget, a Scottish Budget or a change to HMRC's pension guidance, and each page shows the date the rules were last read. There is no automatic update.</p>
+    <h2>Corrections</h2>
+    <ol><li>We open the law or the official page again.</li><li>We correct the parameter file or the engine, and add a test for the case.</li><li>The pages rebuild and show the new date.</li></ol>
+    <h2>Independence and licence</h2><p>No provider, adviser, employer or government body pays for or reviews what is published here, and the site carries no affiliate link. Figures from GOV.UK and legislation.gov.uk are public sector information reused under the Open Government Licence v3.0. See also the <a href={route('method', lang)}>method</a>. Version: {LAST_UPDATED}.</p>
+  </div>
+</PageLayout>

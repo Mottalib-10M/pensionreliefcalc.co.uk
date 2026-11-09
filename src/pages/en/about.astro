@@ -1,0 +1,30 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { LAST_UPDATED, AUTHOR_NAME, CONTACT_EMAIL, AUTHOR_ROLE } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+import { personSchema, organizationSchema, breadcrumbSchema, profilePageSchema } from '../../lib/seo';
+import { displayDate } from '../../lib/format';
+import { PAGES } from '../../lib/guides';
+import { P } from '../../lib/engine/params';
+const lang = 'en';
+const n = PAGES.length + 1;
+const nSrc = Object.keys(P.sources).length;
+---
+<PageLayout title="Pension Relief Calc publisher: who does the sums, and how" description="Who works out pension tax relief for Pension Relief Calc, why it covers Scotland and all three methods, where its rules come from, and what it never sells." lang={lang} jsonLd={[personSchema(lang), organizationSchema(lang), profilePageSchema({ path: route('about', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'About', path: route('about', lang) }])]} breadcrumbs={[{ label: 'About' }]}>
+  <header class="mb-6"><p class="kicker">About</p><h1 class="mt-1 text-3xl font-bold text-navy-900 md:text-4xl">Who does the sums on Pension Relief Calc</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <div class="not-prose mb-6"><p class="text-lg font-semibold text-navy-900">{AUTHOR_NAME}</p><p class="text-navy-700">{AUTHOR_ROLE[lang]}</p></div>
+    <p>Pension Relief Calc is published by Radif Partners, an independent company that builds free calculators on public rules. It is for UK savers who want to know what a pension contribution really costs them: an employee choosing between a SIPP and more salary sacrifice, a Scottish taxpayer unsure whether there is relief to claim, a parent on {'£'}65,000 facing the Child Benefit charge, someone on {'£'}110,000 who has heard of the 60% band, or a director planning a payment with carry forward.</p>
+    <h2>Why this site exists</h2>
+    <p>The relief calculators we read in November 2026, published by pension providers, used the rates of England, Wales and Northern Ireland only, assumed one method and no carry forward. Scottish taxpayers, who pay six rates and have different claims, and employees comparing salary sacrifice with a SIPP, were left to work it out. The April 2029 cap on NI-free salary sacrifice, published in November 2025, had not reached any of them. This site works out the same contribution three ways, for both tax systems, with the claim to make and the limits that apply.</p>
+    <h2>Where the numbers come from</h2>
+    <p>Rates, bands, allowances and limits come from GOV.UK, HMRC and legislation.gov.uk: the Income Tax and Scottish rates pages, HMRC's rates and thresholds for employers, its pension schemes rates page and its guidance on the taper, carry forward and the MPAA, the Finance Act 2004 and the Income Tax (Earnings and Pensions) Act 2003. All of them sit in one parameter file with the page each figure was read on: {nSrc} official pages, read on {displayDate(P.retrieved_at, 'en-GB')}. The engine is tested against HMRC's worked examples, and a failing test stops the site from being built. The <a href={route('method', lang)}>method page</a> lists each rule.</p>
+    <h2>What we are not</h2>
+    <p>We are not HMRC, MoneyHelper, Pension Wise, a pension provider or a financial adviser. We cannot see your pensions, your tax code or your payslips. The figures are an estimate of the rules applied to the numbers you type; HMRC's calculation is the one that counts, and decisions about your pension are yours and your scheme's.</p>
+    <h2>How the site is paid for</h2>
+    <p>It is free and needs no account or email. We sell no pension, investment, car lease or advice, take no commission and link to no firm that does. If advertising is added one day, it will never sit above a calculator, and it cannot use what you type because nothing you type leaves your browser.</p>
+    <h2>Tell us when a figure is wrong</h2>
+    <p>Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the salary, contribution and method you used and the figure you expected, ideally with the HMRC page or letter that shows it. The <a href={route('editorial', lang)}>editorial policy</a> explains how a correction is made. The site has {n} indexed pages; the full list is on the home page.</p>
+    <p class="text-sm text-navy-600">Rules last read on <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time>.</p>
+  </div>
+</PageLayout>

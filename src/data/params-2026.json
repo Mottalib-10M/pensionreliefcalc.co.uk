@@ -1,0 +1,522 @@
+{
+  "_about": "Every statutory figure of the site lives here (RECETTE §4). Each one was read on the official page named in `sources`, on the date of `retrieved_at`, through GOV.UK's content API or legislation.gov.uk. Figures for later years are only those already in law (Finance Acts 2023 and 2025) or published as government policy with a date (salary sacrifice from April 2029); the 2030/31 company car rates were announced at Budget 2026 and are marked as announced, not law.",
+  "year": 2026,
+  "taxYear": "2026/27",
+  "taxYearLong": "6 April 2026 to 5 April 2027",
+  "retrieved_at": "2026-11-07",
+  "valid_from": "2026-04-06",
+  "valid_to": "2027-04-05",
+  "income": {
+    "personalAllowance": 12570,
+    "taperThreshold": 100000,
+    "paZeroAt": 125140,
+    "ruk": [
+      {
+        "name": "basic",
+        "upTo": 37700,
+        "rate": 0.2
+      },
+      {
+        "name": "higher",
+        "upTo": 125140,
+        "rate": 0.4
+      },
+      {
+        "name": "additional",
+        "upTo": null,
+        "rate": 0.45
+      }
+    ],
+    "scotland": [
+      {
+        "name": "starter",
+        "upTo": 3967,
+        "rate": 0.19
+      },
+      {
+        "name": "basic",
+        "upTo": 16956,
+        "rate": 0.2
+      },
+      {
+        "name": "intermediate",
+        "upTo": 31092,
+        "rate": 0.21
+      },
+      {
+        "name": "higher",
+        "upTo": 62430,
+        "rate": 0.42
+      },
+      {
+        "name": "advanced",
+        "upTo": 125140,
+        "rate": 0.45
+      },
+      {
+        "name": "top",
+        "upTo": null,
+        "rate": 0.48
+      }
+    ],
+    "scotlandIncomeBands": [
+      {
+        "name": "Personal Allowance",
+        "from": 0,
+        "to": 12570,
+        "rate": 0
+      },
+      {
+        "name": "Starter rate",
+        "from": 12571,
+        "to": 16537,
+        "rate": 0.19
+      },
+      {
+        "name": "Basic rate",
+        "from": 16538,
+        "to": 29526,
+        "rate": 0.2
+      },
+      {
+        "name": "Intermediate rate",
+        "from": 29527,
+        "to": 43662,
+        "rate": 0.21
+      },
+      {
+        "name": "Higher rate",
+        "from": 43663,
+        "to": 75000,
+        "rate": 0.42
+      },
+      {
+        "name": "Advanced rate",
+        "from": 75001,
+        "to": 125140,
+        "rate": 0.45
+      },
+      {
+        "name": "Top rate",
+        "from": 125141,
+        "to": null,
+        "rate": 0.48
+      }
+    ],
+    "scotlandExtraRelief": [
+      {
+        "taxRate": 0.21,
+        "extra": 0.01
+      },
+      {
+        "taxRate": 0.42,
+        "extra": 0.22
+      },
+      {
+        "taxRate": 0.45,
+        "extra": 0.25
+      },
+      {
+        "taxRate": 0.48,
+        "extra": 0.28
+      }
+    ],
+    "rukExtraRelief": [
+      {
+        "taxRate": 0.4,
+        "extra": 0.2
+      },
+      {
+        "taxRate": 0.45,
+        "extra": 0.25
+      }
+    ]
+  },
+  "ni": {
+    "primaryThreshold": 12570,
+    "upperEarningsLimit": 50270,
+    "lowerEarningsLimit": 6708,
+    "mainRate": 0.08,
+    "upperRate": 0.02,
+    "secondaryThreshold": 5000,
+    "employerRate": 0.15,
+    "class1A": 0.15
+  },
+  "relief": {
+    "basicAmount": 3600,
+    "basicAmountNet": 2880,
+    "rasRate": 0.2,
+    "maxAge": 75,
+    "netPayTopUpFrom": "2024/25"
+  },
+  "allowances": {
+    "current": "2026/27",
+    "years": {
+      "2016/17": {
+        "aa": 40000,
+        "threshold": 110000,
+        "adjusted": 150000,
+        "minTaper": 10000,
+        "mpaa": null
+      },
+      "2017/18": {
+        "aa": 40000,
+        "threshold": 110000,
+        "adjusted": 150000,
+        "minTaper": 10000,
+        "mpaa": null
+      },
+      "2018/19": {
+        "aa": 40000,
+        "threshold": 110000,
+        "adjusted": 150000,
+        "minTaper": 10000,
+        "mpaa": null
+      },
+      "2019/20": {
+        "aa": 40000,
+        "threshold": 110000,
+        "adjusted": 150000,
+        "minTaper": 10000,
+        "mpaa": 4000
+      },
+      "2020/21": {
+        "aa": 40000,
+        "threshold": 200000,
+        "adjusted": 240000,
+        "minTaper": 4000,
+        "mpaa": 4000
+      },
+      "2021/22": {
+        "aa": 40000,
+        "threshold": 200000,
+        "adjusted": 240000,
+        "minTaper": 4000,
+        "mpaa": 4000
+      },
+      "2022/23": {
+        "aa": 40000,
+        "threshold": 200000,
+        "adjusted": 240000,
+        "minTaper": 4000,
+        "mpaa": 4000
+      },
+      "2023/24": {
+        "aa": 60000,
+        "threshold": 200000,
+        "adjusted": 260000,
+        "minTaper": 10000,
+        "mpaa": 10000
+      },
+      "2024/25": {
+        "aa": 60000,
+        "threshold": 200000,
+        "adjusted": 260000,
+        "minTaper": 10000,
+        "mpaa": 10000
+      },
+      "2025/26": {
+        "aa": 60000,
+        "threshold": 200000,
+        "adjusted": 260000,
+        "minTaper": 10000,
+        "mpaa": 10000
+      },
+      "2026/27": {
+        "aa": 60000,
+        "threshold": 200000,
+        "adjusted": 260000,
+        "minTaper": 10000,
+        "mpaa": 10000
+      }
+    },
+    "_mpaaNote": "HMRC's pension schemes rates page lists the money purchase annual allowance from 2019/20 to 2026/27 only; earlier years are null and never used.",
+    "alternativeAA": 50000,
+    "lumpSumAllowance": 268275,
+    "lumpSumDeathBenefitAllowance": 1073100,
+    "lifetimeAllowanceAbolished": "2024-04-06"
+  },
+  "sacrifice": {
+    "niCap": 2000,
+    "niCapFrom": "2029-04-06",
+    "niCapAnnounced": "2025-11-26",
+    "carMaxCo2NormalRules": 75
+  },
+  "cars": {
+    "years": [
+      "2026/27",
+      "2027/28",
+      "2028/29",
+      "2029/30"
+    ],
+    "zero": {
+      "2026/27": 0.04,
+      "2027/28": 0.05,
+      "2028/29": 0.07,
+      "2029/30": 0.09
+    },
+    "hybrid": {
+      "2026/27": [
+        {
+          "minRange": 130,
+          "rate": 0.04
+        },
+        {
+          "minRange": 70,
+          "rate": 0.07
+        },
+        {
+          "minRange": 40,
+          "rate": 0.1
+        },
+        {
+          "minRange": 30,
+          "rate": 0.14
+        },
+        {
+          "minRange": 0,
+          "rate": 0.16
+        }
+      ],
+      "2027/28": [
+        {
+          "minRange": 130,
+          "rate": 0.05
+        },
+        {
+          "minRange": 70,
+          "rate": 0.08
+        },
+        {
+          "minRange": 40,
+          "rate": 0.11
+        },
+        {
+          "minRange": 30,
+          "rate": 0.15
+        },
+        {
+          "minRange": 0,
+          "rate": 0.17
+        }
+      ],
+      "2028/29": [
+        {
+          "minRange": 0,
+          "rate": 0.18
+        }
+      ],
+      "2029/30": [
+        {
+          "minRange": 0,
+          "rate": 0.19
+        }
+      ]
+    },
+    "maxRate": {
+      "2026/27": 0.37,
+      "2027/28": 0.37,
+      "2028/29": 0.38,
+      "2029/30": 0.39
+    },
+    "announced2030": {
+      "year": "2030/31",
+      "zero": 0.1,
+      "hybrid": 0.2,
+      "max": 0.4
+    }
+  },
+  "statePension": {
+    "fullWeekly": 241.3,
+    "qualifyingYearsFull": 35,
+    "qualifyingYearsMin": 10
+  },
+  "childBenefit": {
+    "eldestWeekly": 27.05,
+    "otherWeekly": 17.9,
+    "hicbcFrom": 60000,
+    "hicbcTo": 80000,
+    "hicbcStep": 200
+  },
+  "minimumPensionAge": {
+    "now": 55,
+    "from2028": 57,
+    "changeDate": "2028-04-06"
+  },
+  "sources": {
+    "gov_rates": {
+      "url": "https://www.gov.uk/income-tax-rates",
+      "label": {
+        "en": "GOV.UK, Income Tax rates and Personal Allowances (2026 to 2027)"
+      }
+    },
+    "gov_scot": {
+      "url": "https://www.gov.uk/scottish-income-tax",
+      "label": {
+        "en": "GOV.UK, Income Tax in Scotland: 2026 to 2027 rates"
+      }
+    },
+    "hmrc_employer": {
+      "url": "https://www.gov.uk/guidance/rates-and-thresholds-for-employers-2026-to-2027",
+      "label": {
+        "en": "HMRC, Rates and thresholds for employers 2026 to 2027"
+      }
+    },
+    "gov_relief": {
+      "url": "https://www.gov.uk/tax-on-your-private-pension/pension-tax-relief",
+      "label": {
+        "en": "GOV.UK, Tax on your private pension contributions: tax relief"
+      }
+    },
+    "gov_aa": {
+      "url": "https://www.gov.uk/tax-on-your-private-pension/annual-allowance",
+      "label": {
+        "en": "GOV.UK, Tax on your private pension contributions: annual allowance"
+      }
+    },
+    "gov_lsa": {
+      "url": "https://www.gov.uk/tax-on-your-private-pension/lump-sum-allowance",
+      "label": {
+        "en": "GOV.UK, Tax on your private pension contributions: lump sum allowance"
+      }
+    },
+    "hmrc_rates": {
+      "url": "https://www.gov.uk/government/publications/rates-and-allowances-pension-schemes/pension-schemes-rates",
+      "label": {
+        "en": "HMRC, Pension schemes rates (annual allowance, taper and MPAA by tax year)"
+      }
+    },
+    "hmrc_taper": {
+      "url": "https://www.gov.uk/guidance/pension-schemes-work-out-your-tapered-annual-allowance",
+      "label": {
+        "en": "HMRC, Work out your reduced (tapered) annual allowance"
+      }
+    },
+    "hmrc_cf": {
+      "url": "https://www.gov.uk/guidance/check-if-you-have-unused-annual-allowances-on-your-pension-savings",
+      "label": {
+        "en": "HMRC, Check if you have unused annual allowances on your pension savings"
+      }
+    },
+    "hmrc_mpaa": {
+      "url": "https://www.gov.uk/guidance/work-out-your-allowances-if-youve-flexibly-accessed-your-pension",
+      "label": {
+        "en": "HMRC, Check if you've gone above the money purchase annual allowance"
+      }
+    },
+    "hmrc_claim": {
+      "url": "https://www.gov.uk/guidance/claim-tax-relief-on-your-private-pension-payments",
+      "label": {
+        "en": "HMRC, Claim tax relief on your private pension payments"
+      }
+    },
+    "gov_netpay": {
+      "url": "https://www.gov.uk/government/publications/pensions-relief-relating-to-net-pay-arrangements",
+      "label": {
+        "en": "HMRC, Pensions relief relating to net pay arrangements (top-up for low earners)"
+      }
+    },
+    "leg_fa04_190": {
+      "url": "https://www.legislation.gov.uk/ukpga/2004/12/section/190",
+      "label": {
+        "en": "Finance Act 2004, section 190 (annual limit for relief: earnings or the £3,600 basic amount)"
+      }
+    },
+    "leg_fa04_228a": {
+      "url": "https://www.legislation.gov.uk/ukpga/2004/12/section/228A",
+      "label": {
+        "en": "Finance Act 2004, section 228A (carry forward of unused annual allowance)"
+      }
+    },
+    "hmrc_ss": {
+      "url": "https://www.gov.uk/guidance/salary-sacrifice-and-the-effects-on-paye",
+      "label": {
+        "en": "HMRC, Salary sacrifice for employers"
+      }
+    },
+    "gov_ss2029": {
+      "url": "https://www.gov.uk/government/publications/changes-to-salary-sacrifice-for-pensions-from-april-2029",
+      "label": {
+        "en": "HM Treasury and HMRC, Changes to salary sacrifice for pensions from April 2029"
+      }
+    },
+    "hmrc_480": {
+      "url": "https://www.gov.uk/guidance/company-car-benefit-the-appropriate-percentage-480-appendix-2",
+      "label": {
+        "en": "HMRC, Work out the appropriate percentage for company car benefits (480: Appendix 2)"
+      }
+    },
+    "leg_itepa139": {
+      "url": "https://www.legislation.gov.uk/ukpga/2003/1/section/139",
+      "label": {
+        "en": "Income Tax (Earnings and Pensions) Act 2003, section 139"
+      }
+    },
+    "leg_fa23_11": {
+      "url": "https://www.legislation.gov.uk/ukpga/2023/1/section/11",
+      "label": {
+        "en": "Finance Act 2023, section 11 (appropriate percentages up to 2027/28)"
+      }
+    },
+    "leg_fa25_5": {
+      "url": "https://www.legislation.gov.uk/ukpga/2025/8/section/5",
+      "label": {
+        "en": "Finance Act 2025, section 5 (appropriate percentages for 2028/29)"
+      }
+    },
+    "leg_fa25_6": {
+      "url": "https://www.legislation.gov.uk/ukpga/2025/8/section/6",
+      "label": {
+        "en": "Finance Act 2025, section 6 (appropriate percentages from 2029/30)"
+      }
+    },
+    "gov_budget26": {
+      "url": "https://www.gov.uk/government/publications/budget-2026-document",
+      "label": {
+        "en": "HM Treasury, Budget 2026 (28 October 2026)"
+      }
+    },
+    "gov_nsp": {
+      "url": "https://www.gov.uk/new-state-pension/what-youll-get",
+      "label": {
+        "en": "GOV.UK, The new State Pension: what you'll get"
+      }
+    },
+    "gov_spa": {
+      "url": "https://www.gov.uk/state-pension-age",
+      "label": {
+        "en": "GOV.UK, Check your State Pension age"
+      }
+    },
+    "gov_cb": {
+      "url": "https://www.gov.uk/child-benefit/what-youll-get",
+      "label": {
+        "en": "GOV.UK, Child Benefit: what you'll get"
+      }
+    },
+    "gov_hicbc": {
+      "url": "https://www.gov.uk/child-benefit-tax-charge",
+      "label": {
+        "en": "GOV.UK, High Income Child Benefit Charge"
+      }
+    },
+    "gov_nmpa": {
+      "url": "https://www.gov.uk/government/publications/increasing-normal-minimum-pension-age",
+      "label": {
+        "en": "HMRC, Increasing Normal Minimum Pension Age (55 to 57 on 6 April 2028)"
+      }
+    },
+    "gov_taxpension": {
+      "url": "https://www.gov.uk/tax-on-pension",
+      "label": {
+        "en": "GOV.UK, Tax when you get a pension"
+      }
+    },
+    "gov_tfc": {
+      "label": {
+        "en": "GOV.UK, Tax-Free Childcare: eligibility (adjusted net income over £100,000)"
+      },
+      "url": "https://www.gov.uk/tax-free-childcare/eligibility"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+import { definePage } from '../../lib/guide-types';
+
+export default definePage({
+  id: 'salary-sacrifice-child-benefit',
+  group: 'sacrifice',
+  order: 40,
+  mini: { kind: 'mini:hicbc', props: { salary: 72000, kids: 2, gross: 8000 } },
+  related: ['pension-tax-relief-on-60000-salary', 'salary-sacrifice-calculator', 'salary-sacrifice-2029-cap', 'pension-contributions-over-100k'],
+  sources: ['gov_hicbc', 'gov_cb', 'gov_ss2029', 'gov_relief'],
+  slug: 'salary-sacrifice-child-benefit',
+  nav: 'Pensions and the Child Benefit charge',
+  card: 'How a pension contribution between £60,000 and £80,000 cuts the High Income Child Benefit Charge, with relief of 50% to 70% or more.',
+  title: 'Child Benefit Charge and Pensions: Cutting the HICBC 2026/27',
+  description: 'Child Benefit charge and pension contributions in 2026/27: how a sacrifice or SIPP payment lowers adjusted net income between £60,000 and £80,000, by children.',
+  h1: 'Pension contributions and the High Income Child Benefit Charge',
+  intro: 'Between £60,000 and £80,000 of adjusted net income, the High Income Child Benefit Charge takes back Child Benefit at a steady rate. A pension contribution lowers that income, so it cuts the charge and the tax together.',
+  resume: (h) => {
+    const cb = h.R.childBenefitYear(2);
+    const before = h.R.hicbc(72000, 2), after = h.R.hicbc(64000, 2);
+    const tax = h.tax(72000) - h.tax(64000);
+    return `Child Benefit is ${h.m2(h.P.childBenefit.eldestWeekly)} a week for the eldest child and ${h.m2(h.P.childBenefit.otherWeekly)} for each other child in ${h.P.taxYear} (${h.src('gov_cb', 'GOV.UK, Child Benefit rates')}), ${h.m(cb)} a year for two children. If either parent has adjusted net income above ${h.m(h.P.childBenefit.hicbcFrom)}, the higher earner pays a charge of 1% of the benefit for every ${h.m(h.P.childBenefit.hicbcStep)} above that figure, so it is all taken back at ${h.m(h.P.childBenefit.hicbcTo)} (${h.src('gov_hicbc', 'GOV.UK, High Income Child Benefit Charge')}). A gross pension contribution lowers adjusted net income pound for pound. A parent on ${h.m(72000)} with two children who contributes ${h.m(8000)} gross cuts the charge from ${h.m(before)} to ${h.m(after)} and saves ${h.m(tax)} of Income Tax as well: ${h.m(before - after + tax)} of help on ${h.m(8000)}, about ${h.pc((before - after + tax) / 8000)}. By salary sacrifice it also saves 2% NI. HM Treasury has confirmed that sacrificing salary to keep Child Benefit stays possible after the April 2029 NI cap.`;
+  },
+  faqs: (h) => [
+    { q: 'What is the effective tax rate between £60,000 and £80,000 with children?', a: `With two children, each extra ${h.m(200)} of income costs 1% of ${h.m(h.R.childBenefitYear(2))}, about ${h.m(h.R.childBenefitYear(2) / 100)}, on top of ${h.m(80)} of higher rate tax: roughly ${h.pc((h.R.childBenefitYear(2) / 100 + 80) / 200)} before NI. With three children it is higher still. A pension contribution in that range is relieved at the same combined rate.` },
+    { q: 'Does my partner’s pension contribution help with the charge?', a: 'Only if your partner is the one with the higher adjusted net income, because the charge is paid by whichever of you has the higher figure, and it is worked out on that person’s income alone. Contributions by the lower earner do not affect it. Couples can therefore choose whose pension to pay into for the best result.' },
+    { q: 'Should I stop claiming Child Benefit instead?', a: 'You can opt out of payments, but it is usually better to keep claiming, especially if one parent does not work. The claim still gives National Insurance credits, which count towards the State Pension, and a National Insurance number for the child without an application. You can claim and choose not to be paid.' },
+    { q: 'How do I pay the High Income Child Benefit Charge?', a: 'Through Self Assessment, or through your tax code if you are employed or get a pension and set that up on GOV.UK, in which case HMRC sends the new code to your employer or pension provider. You need to know your adjusted net income for the tax year, including the gross amount of any relief at source pension contributions, which lower it. Net pay and salary sacrifice contributions already reduce the income on your P60.' },
+  ],
+  body: (h) => {
+    const incs = [60000, 65000, 70000, 75000, 80000, 85000];
+    const rows = incs.map((i) => [h.m(i), h.m(h.R.hicbc(i, 1)), h.m(h.R.hicbc(i, 2)), h.m(h.R.hicbc(i, 3))]);
+    const gain = [[1, 72000, 8000], [2, 72000, 8000], [3, 72000, 8000], [2, 80000, 20000]].map(([k, i, g]) => { const cut = h.R.hicbc(i, k) - h.R.hicbc(i - g, k); const tax = h.tax(i) - h.tax(i - g); return [String(k), h.m(i), h.m(g), h.m(cut), h.m(tax), h.pc((cut + tax) / g)]; });
+    const ss = h.relief({ salary: 72000, method: 'sacrifice', amount: 8000 });
+    return `<h2>The charge at each income</h2>
+${h.table(['Adjusted net income', 'One child', 'Two children', 'Three children'], rows, `High Income Child Benefit Charge, ${h.P.taxYear}. Child Benefit at the weekly rates times 52; charge of 1% per ${h.m(h.P.childBenefit.hicbcStep)} above ${h.m(h.P.childBenefit.hicbcFrom)}, rounded down.`, ['l', 'r', 'r', 'r'])}
+<p>The charge rises in steps of ${h.m(h.P.childBenefit.hicbcStep)}, one per cent at a time, until it equals the whole benefit at ${h.m(h.P.childBenefit.hicbcTo)}. These thresholds apply from the 2024/25 tax year; up to 2023/24 the charge started at ${h.m(50000)}, as GOV.UK still notes for earlier years.</p>
+<h2>What a contribution saves</h2>
+${h.table(['Children', 'Income', 'Gross contribution', 'Charge saved', 'Income Tax saved', 'Total help'], gain, 'Rest of the UK. NI savings from salary sacrifice come on top. Engine of this site.', ['l', 'r', 'r', 'r', 'r', 'r'])}
+<p>The more children, the bigger the help, because each step of ${h.m(h.P.childBenefit.hicbcStep)} takes back more money. With three children, a contribution in the ${h.m(h.P.childBenefit.hicbcFrom)} to ${h.m(h.P.childBenefit.hicbcTo)} zone can earn relief well above 60%. The last row shows a parent on ${h.m(80000)} who brings income down to ${h.m(60000)}: the whole charge goes, plus 40% tax relief on the part above ${h.m(h.higherStart)}.</p>
+<h2>Sacrifice, net pay or relief at source</h2>
+<p>All three methods lower adjusted net income by the gross contribution. Sacrifice and net pay do it in payroll; relief at source needs the gross figure on your Self Assessment return or a claim, without which HMRC will work out the charge on the higher income. On ${h.m(72000)}, sacrificing ${h.m(8000)} also saves ${h.m(ss.niSaved)} of NI. The ${h.src('gov_ss2029', 'policy paper on the April 2029 cap')} says that employees who sacrifice salary to keep Child Benefit can continue, but NI will be due above ${h.m(h.P.sacrifice.niCap)} a year. The Income Tax and charge savings, which are most of the gain, stay.</p>
+<h2>Adjusted net income in practice</h2>
+<p>It is your total taxable income, including salary, bonus, benefits in kind, self-employed profit, rental profit, savings interest and dividends, less gross relief at source pension contributions and gross Gift Aid. GOV.UK's ${h.src('gov_relief', 'pension tax relief page')} explains the gross figure: what you paid plus the basic rate the provider added. Interest and dividends count, so a parent with savings outside an ISA can be pushed over ${h.m(h.P.childBenefit.hicbcFrom)} by them.</p>
+<h2>Checklist for a parent near ${h.m(h.P.childBenefit.hicbcFrom)}</h2>
+<ol><li>Work out adjusted net income for the year, including any bonus.</li><li>Find which partner has the higher figure: only that person pays the charge.</li><li>Choose a gross contribution that brings income down to the level you want, ${h.m(h.P.childBenefit.hicbcFrom)} for no charge at all.</li><li>Use sacrifice or net pay if your employer offers them; otherwise pay into a SIPP and report the gross amount.</li><li>Keep claiming Child Benefit even if the charge takes it all, for the NI credits.</li></ol>
+<p>The calculator above takes your figures. For the same effect at the ${h.m(100000)} line, see the ${h.a('pension-contributions-over-100k', 'guide to contributions over £100,000')}; for a salary of ${h.m(60000)} with a pay rise, the ${h.a('pension-tax-relief-on-60000-salary', '£60,000 page')}. The ${h.a('salary-sacrifice-calculator', 'salary sacrifice calculator')} and the ${h.a('salary-sacrifice-2029-cap', 'guide to the 2029 cap')} cover the NI side.</p>
+<h2>Three families</h2>
+<p>A single mother of one on ${h.m(66000)} pays a charge of ${h.m(h.R.hicbc(66000, 1))}. A gross contribution of ${h.m(6000)}, ${h.m(4800)} paid into a SIPP, removes it and saves ${h.m(h.tax(66000) - h.tax(60000))} of Income Tax: help of about ${h.pc((h.R.hicbc(66000, 1) + h.tax(66000) - h.tax(60000)) / 6000)} on the gross amount. A couple where one partner earns ${h.m(75000)} and the other ${h.m(20000)}, with two children, pays a charge of ${h.m(h.R.hicbc(75000, 2))} on the higher earner's income; only that partner's contributions help. A father of three on ${h.m(80000)} loses all ${h.m(h.R.childBenefitYear(3))} of Child Benefit to the charge; ${h.m(20000)} gross into a pension brings it all back and saves ${h.m(h.tax(80000) - h.tax(60000))} of tax too.</p>
+<h2>Couples: whose income counts</h2>
+<p>The charge is on the partner with the higher adjusted net income, whether or not that partner receives the benefit. Partners means married couples, civil partners and people living together as a couple. If the lower earner's income rises above the higher earner's during the year, the charge moves to them for that year. Couples near the threshold sometimes compare incomes each year before deciding whose pension to pay into.</p>
+<h2>Self-employed parents</h2>
+<p>A self-employed parent with profits in the ${h.m(h.P.childBenefit.hicbcFrom)} to ${h.m(h.P.childBenefit.hicbcTo)} range contributes by relief at source, normally into a SIPP or personal pension. The contribution reduces adjusted net income once it is on the Self Assessment return, so it can be made right up to 5 April, once profits for the year are clear. The charge and the relief are worked out in the same calculation, and the payment on account for the next year follows.</p>
+<h2>Savings and dividends</h2>
+<p>Interest and dividends count in adjusted net income even when they are covered by the Personal Savings Allowance or the dividend allowance. A parent with ${h.m(58000)} of salary and ${h.m(3000)} of interest from savings outside an ISA is over ${h.m(h.P.childBenefit.hicbcFrom)}. Moving the savings into an ISA removes that income from the test, and a pension contribution covers whatever is left.</p>
+<h2>How the charge has changed</h2>
+<p>For 2024/25 onwards the charge starts at ${h.m(h.P.childBenefit.hicbcFrom)} and is complete at ${h.m(h.P.childBenefit.hicbcTo)}, a band of ${h.m(h.P.childBenefit.hicbcTo - h.P.childBenefit.hicbcFrom)} with 1% per ${h.m(h.P.childBenefit.hicbcStep)}. The test remains individual: two parents each on ${h.m(59000)} pay nothing, while a single earner on ${h.m(80000)} loses everything. Any pension planning works on the higher earner's own income. GOV.UK publishes a ${h.src('gov_hicbc', 'calculator of its own')} for the charge itself; the calculator here adds the pension contribution and the Income Tax relief to it.</p>
+<h2>Timing within the tax year</h2>
+<p>The charge is based on adjusted net income for the whole tax year, so a contribution made in March counts as much as one made in April. A parent who learns of a pay rise or a bonus late in the year can still act before 5 April. Salary sacrifice has to be agreed before the pay is earned, so a sacrifice for a March bonus needs to be in place before the bonus is awarded. A SIPP payment by relief at source can be made at any time up to the last day of the tax year, then reported on the return.</p>
+<h2>What the figures leave out</h2>
+<p>The tables use Child Benefit for a full tax year at the weekly rates times 52. A child born during the year, or one who turns 16 and leaves education, changes the benefit and the charge for that year. The calculations also ignore NI and student loans, which salary sacrifice reduces as well, and Scottish rates, under which the Income Tax relief is higher. For a precise figure, put the year's actual Child Benefit into GOV.UK's calculator and the pension contribution into the one on this page.</p>
+<p>Two last cautions. A large sacrifice lowers the salary that lenders see, which can matter before a mortgage application. And the cash salary after sacrifice must stay at or above the National Minimum Wage for your hours, which rarely bites at these incomes but can for part-time work.</p>`;
+  },
+});

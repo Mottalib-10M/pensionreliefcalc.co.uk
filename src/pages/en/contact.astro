@@ -1,0 +1,22 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { CONTACT_EMAIL, LAST_UPDATED, SITE_NAMES } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+const lang = 'en';
+---
+<PageLayout title={`Contact ${SITE_NAMES[lang]}: a figure, a pension tax rule, the widget`} description="Write to Pension Relief Calc when a pension relief figure differs from HMRC’s, when a rule is missing or out of date, or to embed the pension tax relief calculator on your site." lang={lang} noindex={true} breadcrumbs={[{ label: 'Contact' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none">
+    <h1>Contact</h1>
+    <p>Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. A person reads every message.</p>
+    <h2>Our figure differs from HMRC's</h2>
+    <p>Tell us the tax year, your income before tax, how your scheme takes contributions, the amount paid and the figure in HMRC's calculation or letter. The usual reasons for a gap are a contribution entered net instead of gross, a net pay contribution counted twice, other income such as rent or interest, a tax code that already gives the relief, and payroll working month by month. If an official rule has changed, we update the parameter file, rerun the tests and date the change.</p>
+    <h2>What we cannot do</h2>
+    <p>We cannot see your pensions or tax record, make a claim, or speak to HMRC, your employer or your provider for you. Please do not send your National Insurance number, account numbers or payslips. For your own tax position, HMRC's helpline and your personal tax account are the place to go; for free, impartial guidance on pensions, MoneyHelper and Pension Wise.</p>
+    <h2>Using the calculator on your own site</h2>
+    <p>Trade unions, employers' benefits pages, money guidance charities and personal finance writers can show the pension tax relief calculator in an iframe at no cost. The code and conditions are on the <a href={route('widget', lang)}>embed page</a>.</p>
+    <h2>Publisher</h2>
+    <LegalIdentity lang={lang} />
+    <p>Updated: {LAST_UPDATED}.</p>
+  </div>
+</PageLayout>

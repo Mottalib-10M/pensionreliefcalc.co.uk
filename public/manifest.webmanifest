@@ -1,0 +1,21 @@
+{
+ "name": "Pension Relief Calc",
+ "short_name": "Pension Relief Calc",
+ "description": "Pension tax relief for 2026/27 in England, Wales, Northern Ireland and Scotland: relief at source, net pay, salary sacrifice, annual allowance, carry forward.",
+ "start_url": "/en/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#24476B",
+ "icons": [
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

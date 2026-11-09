@@ -1,0 +1,62 @@
+import { definePage } from '../../lib/guide-types';
+
+export default definePage({
+  id: 'money-purchase-annual-allowance',
+  group: 'allowances',
+  order: 30,
+  mini: { kind: 'mini:mpaa', props: { salary: 48000, own: 9000, employer: 4000 } },
+  related: ['annual-allowance-calculator', 'drawdown-calculator', 'carry-forward-calculator', 'pension-calculator'],
+  sources: ['hmrc_mpaa', 'hmrc_rates', 'gov_aa', 'gov_nmpa', 'gov_lsa'],
+  slug: 'money-purchase-annual-allowance',
+  nav: 'Money purchase annual allowance',
+  card: 'What triggers the £10,000 MPAA, what does not, how the charge is worked out and how to keep saving after drawing a pension.',
+  title: 'Money Purchase Annual Allowance 2026/27: £10,000 Triggers',
+  description: 'Money purchase annual allowance for 2026/27: the £10,000 limit after flexible access, what triggers it and what does not, no carry forward, and the charge',
+  h1: 'Money purchase annual allowance: the £10,000 limit after you start drawing',
+  intro: 'Once you take flexible income from a defined contribution pension, the amount you can save into such pensions each year without a tax charge falls from £60,000 to £10,000. This guide sets out when that happens and what it costs.',
+  resume: (h) => {
+    const Y = h.P.allowances.years['2026/27'];
+    const a = h.A.annualAllowance({ income: 48000, own: 9000, method: 'ras', employer: 4000, flexiblyAccessed: true });
+    return `The money purchase annual allowance, or MPAA, is ${h.m(Y.mpaa!)} a year in ${h.P.taxYear} (${h.src('hmrc_rates', 'HMRC, pension schemes rates')}). It applies from the day after you first take money flexibly from a defined contribution pension, for example taxable income from flexi-access drawdown, an uncrystallised funds pension lump sum or a flexible annuity, and it applies for every later tax year. From then on, your contributions to defined contribution pensions and your employer's, together, should not exceed ${h.m(Y.mpaa!)} in a year. Carry forward of unused allowance cannot be used against it. If you go over, the excess is charged at your marginal rate through Self Assessment (${h.src('hmrc_mpaa', 'HMRC, MPAA steps')}). Someone who earns ${h.m(48000)} and has started drawdown, paying ${h.m(9000)} gross with ${h.m(4000)} from the employer, is ${h.m(a.mpaaExcess)} over and faces a charge of about ${h.m(a.charge)}. Taking only the tax-free lump sum does not trigger the MPAA.`;
+  },
+  faqs: (h) => [
+    { q: 'Does taking my 25% tax-free lump sum trigger the MPAA?', a: 'No. Taking a pension commencement lump sum on its own, and moving the rest into drawdown without drawing any income, does not trigger it. The trigger is the first payment of taxable income from drawdown, an uncrystallised funds pension lump sum, or certain other flexible payments. Keep the remaining fund untouched if you plan to keep saving at the full allowance.' },
+    { q: 'Does a small pot lump sum trigger the MPAA?', a: 'No. A small pot payment of up to £10,000, from a pot of that size or less, does not count as flexible access, and you can take up to three from personal pensions plus unlimited small workplace pots. Buying a lifetime annuity that cannot go down, or taking a defined benefit pension, does not trigger it either.' },
+    { q: 'How will I know if I have triggered the MPAA?', a: 'The scheme that paid the flexible benefit must send you a flexible access statement within 31 days. You then have 91 days to tell any other scheme you pay into, or join later, that you have triggered it. Keep the statement: you need the date to work out which savings count against the MPAA in the year it happened.' },
+    { q: 'Can I still pay into a defined benefit pension after triggering the MPAA?', a: `Yes. Defined benefit savings keep an alternative annual allowance of ${h.m(h.P.allowances.alternativeAA)}, so in total you can save up to ${h.m(h.P.allowances.years['2026/27'].aa)} a year, with no more than ${h.m(h.P.allowances.years['2026/27'].mpaa!)} going into defined contribution pensions. The test works out two possible charges and takes the larger one.` },
+  ],
+  body: (h) => {
+    const Y = h.P.allowances.years;
+    const hist = (['2019/20', '2020/21', '2021/22', '2022/23', '2023/24', '2024/25', '2025/26', '2026/27'] as const).map((y) => [y, h.m(Y[y].mpaa!), h.m(Y[y].aa)]);
+    const cases = [[6000, 3000], [9000, 4000], [12000, 6000], [20000, 10000]].map(([o, e]) => { const a = h.A.annualAllowance({ income: 48000, own: o, method: 'ras', employer: e, flexiblyAccessed: true }); const b = h.A.annualAllowance({ income: 48000, own: o, method: 'ras', employer: e }); return [h.m(o), h.m(e), h.m(a.mpaaExcess), h.m(a.charge), h.m(b.charge)]; });
+    return `<h2>What triggers it and what does not</h2>
+<p>HMRC's guidance lists the events that bring in the MPAA. The common ones are:</p>
+<ul><li>taking income from a flexi-access drawdown fund, even a single small payment;</li><li>taking an uncrystallised funds pension lump sum (UFPLS), where each payment is a quarter tax free and three quarters taxed;</li><li>buying a flexible annuity whose payments can go down;</li><li>taking income from a capped drawdown arrangement above the cap, which converts it to flexi-access.</li></ul>
+<p>Events that do not trigger it include taking only the tax-free lump sum, buying a lifetime annuity with payments that cannot fall, drawing a defined benefit pension, and small pot lump sums. Since ${h.P.allowances.lifetimeAllowanceAbolished.slice(0, 4)} the tax-free part of all lump sums is limited by the ${h.m(h.P.allowances.lumpSumAllowance)} lump sum allowance (${h.src('gov_lsa', 'GOV.UK')}), a separate rule.</p>
+<h2>The limit over the years</h2>
+${h.table(['Tax year', 'MPAA', 'Standard annual allowance'], hist, 'HMRC, pension schemes rates. Years before 2019/20 are not listed on that page.', ['l', 'r', 'r'])}
+<p>The MPAA was ${h.m(4000)} in every year the page lists from 2019/20 to 2022/23, and went back up to ${h.m(10000)} on 6 April 2023, when the standard allowance rose to ${h.m(60000)}. Someone who triggered it years ago still has it today, at the current level.</p>
+<h2>How the charge is worked out</h2>
+<p>Once the MPAA applies, HMRC runs two tests for the year. In the first, money purchase savings above ${h.m(Y['2026/27'].mpaa!)} are the excess. In the second, all savings are tested against the alternative annual allowance of ${h.m(h.P.allowances.alternativeAA)} for defined benefit savings plus the ${h.m(Y['2026/27'].mpaa!)}, and any carry forward can only help the defined benefit part. The charge is on the larger excess. For someone with only defined contribution pensions, it comes down to the first test.</p>
+${h.table(['You pay in, gross', 'Employer pays', 'Over the MPAA', 'Charge after flexible access', 'Charge without it'], cases, `Income of ${h.m(48000)}, ${h.P.taxYear}, rest of the UK, defined contribution only. Engine of this site.`, ['l', 'r', 'r', 'r', 'r'])}
+<p>The charge is income tax on the excess at your own rates, so on ${h.m(48000)} most of it is at 20% and some at 40%. It is reported on a Self Assessment return. Because tax relief was given on the contribution and the charge takes it back, an excess paid by relief at source is effectively a contribution with no relief at all.</p>
+<h2>In the year you trigger it</h2>
+<p>Only savings made after the trigger date count against the MPAA in that year; savings before it count against the normal ${h.m(Y['2026/27'].aa)} allowance. A worker who takes a first drawdown payment on 1 October 2026 can therefore have made larger contributions from April to September without a problem. The flexible access statement gives the date. From the next tax year, the whole year is subject to the MPAA.</p>
+<h2>Planning around it</h2>
+<ul><li>If you need cash at ${h.P.minimumPensionAge.now} or later but plan to keep working, take the tax-free lump sum on its own first; it does not trigger the MPAA. The minimum age rises to ${h.P.minimumPensionAge.from2028} on ${h.date(h.P.minimumPensionAge.changeDate)} (${h.src('gov_nmpa', 'HMRC')}).</li><li>Use small pot payments where they fit.</li><li>If you must take income, check what your employer pays in. Auto-enrolment contributions alone can reach the ${h.m(Y['2026/27'].mpaa!)} on a good salary.</li><li>Tell every scheme within 91 days of receiving the flexible access statement.</li></ul>
+<p>The calculator above shows whether a given level of saving goes over. The full ${h.a('annual-allowance-calculator', 'annual allowance calculator')} has a switch for flexible access, the ${h.a('drawdown-calculator', 'drawdown calculator')} shows how long the pot lasts once you draw, and the ${h.a('carry-forward-calculator', 'carry forward calculator')} applies to the normal allowance only. GOV.UK's ${h.src('gov_aa', 'annual allowance page')} gives the general rules.</p>
+<h2>A worked case: phased retirement</h2>
+<p>A 58-year-old engineer cuts to three days a week on ${h.m(36000)} and takes ${h.m(6000)} a year of taxable income from drawdown to top up his pay. The first payment triggers the MPAA. His workplace scheme takes 5% of pay and his employer adds 8%, a total of ${h.m(36000 * 0.13)}, comfortably under ${h.m(h.P.allowances.years['2026/27'].mpaa!)}. If he also wants to pay ${h.m(8000)} into a SIPP from a lump sum, the total becomes ${h.m(36000 * 0.13 + 10000)} gross and he is over. Had he taken only his tax-free cash and left the rest uncrystallised, he could have saved up to ${h.m(h.P.allowances.years['2026/27'].aa)} a year.</p>
+<h2>Defined benefit members</h2>
+<p>Someone with both a defined benefit pension and a defined contribution pot who takes flexible income from the pot keeps an allowance for the defined benefit side. In the alternative test, defined benefit savings are measured against ${h.m(h.P.allowances.alternativeAA)}, and carry forward can be used against that part. A teacher or civil servant who draws a small pot flexibly can therefore keep building a public sector pension, as long as any defined contribution saving, such as additional voluntary contributions to a money purchase plan, stays within ${h.m(h.P.allowances.years['2026/27'].mpaa!)}.</p>
+<h2>Recycling the tax-free cash</h2>
+<p>A separate rule stops people taking tax-free cash and paying it straight back into a pension to get relief a second time. It applies to significant lump sums and pre-planned increases in contributions, and is unrelated to the MPAA. Someone who takes a lump sum and then raises contributions sharply should check HMRC's guidance on recycling before doing so.</p>
+<h2>After the MPAA: what still works</h2>
+<p>Workplace auto-enrolment contributions keep going and are normally well within the limit. ISAs have their own allowance and no link to pensions. Contributions on behalf of a partner or child go into their pensions and count against their allowances, not yours.</p>
+<h2>Questions to ask before your first withdrawal</h2>
+<ol><li>Will I, or my employer, pay more than ${h.m(h.P.allowances.years['2026/27'].mpaa!)} a year into defined contribution pensions from now on, including auto-enrolment?</li><li>Can I meet my need for cash with the tax-free lump sum alone, or with small pot payments?</li><li>Is an uncrystallised funds pension lump sum the right choice, given that each payment triggers the MPAA as well as being three quarters taxable?</li><li>Have I kept the flexible access statement, and told my other schemes within 91 days?</li><li>Could the employer pay into a defined benefit section instead, measured against the alternative allowance?</li></ol>
+<p>The answers decide whether to draw now or wait. A person who stops work entirely and will make no more contributions can usually ignore the MPAA; it matters to those who keep working, change jobs late in their career or plan to return to work. If you think you have triggered it in error, the scheme that paid you can confirm whether the payment counted as flexible access. Pension Wise, the free government guidance service for people aged 50 or over, explains the options in a single appointment.</p>
+<p>The ${h.a('pension-calculator', 'pension calculator')} helps decide whether it is better to keep saving at the full allowance for a few more years before drawing anything.</p>
+<p>One more point for employees: tell your employer's payroll team, not only the scheme, if you trigger the MPAA, because a salary sacrifice or a matching contribution above the limit is charged to you, not to them, and they may let you reduce it.</p>`;
+  },
+});

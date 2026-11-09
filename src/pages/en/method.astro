@@ -1,0 +1,65 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { LAST_UPDATED } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+import { breadcrumbSchema, articleSchema } from '../../lib/seo';
+import { displayDate } from '../../lib/format';
+import { P } from '../../lib/engine/params';
+import { helpers } from '../../lib/helpers';
+const lang = 'en';
+const h = helpers();
+const { m, pc, R, A, C, I } = h;
+const Y = P.allowances.years['2026/27'];
+const g = R.relief({ salary: 60270, method: 'ras', amount: 9600 });
+const s1 = R.relief({ salary: 60000, nation: 'scotland', method: 'ras', amount: 800 });
+const lo = R.relief({ salary: 11000, method: 'netpay', amount: 1000 });
+const cf = A.carryForward([{ year: '2023/24', savings: 20000, member: true }, { year: '2024/25', savings: 30000, member: true }, { year: '2025/26', savings: 60000, member: true }], 100000);
+const car = C.sacrificeCar({ salary: 60000, monthly: 500, listPrice: 40000, year: '2026/27', kind: 'zero' });
+const sources = Object.entries(P.sources) as Array<[string, { url: string; label: { en: string } }]>;
+---
+<PageLayout title="Pension Tax Relief Method 2026/27: Rules, Order and Tests" description="How Pension Relief Calc works out pension tax relief for 2026/27: tax and NI rules, the three methods, Scotland, allowances, car tax, tests and omissions." lang={lang} jsonLd={[articleSchema({ title: 'How the pension tax relief figures are worked out', description: 'Method of Pension Relief Calc', path: route('method', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'Method', path: route('method', lang) }])]} breadcrumbs={[{ label: 'Method' }]}>
+  <header class="mb-6"><p class="kicker">Method</p><h1 class="mt-1 text-3xl font-bold text-navy-900 md:text-4xl">How the sums are done</h1><p class="mt-3 text-lg text-navy-700">Every figure on the site comes from one tested engine fed by one parameter file. This page lists the rules it applies, in order, the checks it passes and what it leaves out. Rules read on <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time>.</p></header>
+  <div class="prose prose-slate max-w-none">
+    <h2>1. Income Tax, twice</h2>
+    <p>Relief is never applied as a flat percentage. The engine works out your whole Income Tax for {P.taxYear} without the contribution and again with it, and shows the difference. That catches every threshold a contribution crosses: the end of the higher rate band, the Personal Allowance taper, a Scottish band boundary.</p>
+    <ul>
+      <li><strong>Personal Allowance</strong>: {m(I.personalAllowance)}, reduced by {m(1)} for every {m(2)} of adjusted net income above {m(I.taperThreshold)}, nil at {m(I.paZeroAt)}.</li>
+      <li><strong>Rest of the UK</strong>: basic rate 20% on the first {m(I.ruk[0].upTo!)} of taxable income, higher rate 40% up to {m(I.ruk[1].upTo!)}, additional rate 45% above.</li>
+      <li><strong>Scotland</strong>: starter 19% on the first {m(I.scotland[0].upTo!)} of taxable income, basic 20% to {m(I.scotland[1].upTo!)}, intermediate 21% to {m(I.scotland[2].upTo!)}, higher 42% to {m(I.scotland[3].upTo!)}, advanced 45% to {m(I.scotland[4].upTo!)}, top 48% above. These are the GOV.UK income bands converted to taxable income; the tests check the published thresholds of {m(43663)} and {m(75001)}.</li>
+    </ul>
+    <h2>2. The three methods</h2>
+    <ul>
+      <li><strong>Relief at source</strong>: the amount you pay is grossed up by 20%; the provider's top-up is 20% of the gross amount within the relief limit. The extra relief is the tax saved by extending the basic rate band (and, in Scotland, every band except the starter band) by the gross contribution. A Scottish starter rate taxpayer keeps the 20%.</li>
+      <li><strong>Net pay</strong>: the contribution is deducted from taxable pay. If taxable pay is nil afterwards, the HMRC top-up of 20% for low earners is added, as paid since 2024/25.</li>
+      <li><strong>Salary sacrifice</strong>: salary is reduced; Income Tax and Class 1 NI are recomputed on the lower figure, for the employee (8% from {m(P.ni.primaryThreshold)} to {m(P.ni.upperEarningsLimit)}, 2% above) and for the employer (15% above {m(P.ni.secondaryThreshold)}). From 6 April 2029, the NI exemption applies to the first {m(P.sacrifice.niCap)} of sacrifice only, as announced; the exempt part is taken as the top slice of pay.</li>
+    </ul>
+    <p>Relief is limited to the greater of earnings and {m(P.relief.basicAmount)} gross (Finance Act 2004, section 190). Above it, the engine shows the excess and gives it no relief.</p>
+    <h2>3. Allowances</h2>
+    <ul>
+      <li><strong>Annual allowance</strong>: {m(Y.aa)}; tapered by half of adjusted income above {m(Y.adjusted)} if threshold income exceeds {m(Y.threshold)}, floor {m(Y.minTaper)}. Threshold income deducts relief at source contributions and adds back salary sacrificed; adjusted income adds employer contributions and net pay contributions back. Earlier years use the figures of HMRC's pension schemes rates page.</li>
+      <li><strong>Charge</strong>: the excess over the allowance and any carry forward is added to income and taxed at your rates.</li>
+      <li><strong>MPAA</strong>: {m(Y.mpaa!)} for defined contribution savings after flexible access; the charge is on the larger of the two excesses; carry forward does not apply to it.</li>
+      <li><strong>Carry forward</strong>: this year's allowance first, then the earliest of the three previous years; a year without scheme membership gives nothing.</li>
+    </ul>
+    <h2>4. Child Benefit, cars, projections</h2>
+    <ul>
+      <li><strong>Child Benefit charge</strong>: 1% of the year's benefit ({m(P.childBenefit.eldestWeekly * 52)} for the eldest, {m(P.childBenefit.otherWeekly * 52)} for each other child) per {m(P.childBenefit.hicbcStep)} of adjusted net income above {m(P.childBenefit.hicbcFrom)}, rounded down.</li>
+      <li><strong>Company cars</strong>: list price times the appropriate percentage of ITEPA 2003 section 139 for the year, rounded down; tax is the difference in Income Tax with and without the benefit, after the sacrifice. Class 1A at {pc(P.ni.class1A)} for the employer.</li>
+      <li><strong>Pot and drawdown</strong>: real return = (1 + growth − charges) ÷ (1 + inflation) − 1, applied monthly to contributions and yearly to withdrawals, in today's money. These are illustrations with assumptions you choose, not forecasts.</li>
+    </ul>
+    <h2>5. Tests</h2>
+    <p>The test suite runs before every build, and a failure stops it. It includes GOV.UK's own example: earnings of {m(60270)} and {m(12000)} gross paid by relief at source give extra relief on {m(10000)} only; the engine gives a top-up of {m(g.providerTopUp)} and a claim of {m(g.claim)}. It checks the Scottish extra relief of 1%, 22%, 25% and 28% (on {m(60000)}, {m(800)} paid gives a claim of {m(s1.claim)}); the net pay top-up below the allowance ({m(lo.hmrcTopUp)} on {m(1000)} at {m(11000)}); 60% relief at {m(110000)}; the taper at both ends; the MPAA; carry forward order ({m(cf.rows[0].used)} used from 2023/24 in the example, {m(cf.carryIntoNext)} carried on); the appropriate percentages for each year; and a {m(40000)} electric car on {m(60000)}, where the company car tax is {m(car.bikTax)} a year. Editorial tests check the length of every page, the FAQ and the links.</p>
+    <h2>6. What is left out</h2>
+    <ul>
+      <li>Savings and dividend income, Gift Aid, the Marriage Allowance, the Blind Person's Allowance and student loans.</li>
+      <li>Payroll timing: everything is a whole-year figure. A payroll that works month by month, or a bonus in one period, can give slightly different NI.</li>
+      <li>Defined benefit accrual, which is entered as a pension input amount by the user.</li>
+      <li>The detailed rules of the April 2029 cap, which are not published yet; the engine applies the cap to the year as a whole.</li>
+      <li>Rates for 2027/28 and later years, except the company car percentages already in law. The 2030/31 car rates announced in Budget 2026 are quoted, not used.</li>
+    </ul>
+    <h2>7. Sources</h2>
+    <p>The parameter file cites {sources.length} official pages, all read on {displayDate(P.retrieved_at, 'en-GB')}. Text is written by us; figures come from these pages, which are Crown copyright and reused under the Open Government Licence v3.0.</p>
+    <ul class="columns-1 text-sm md:columns-2">{sources.map(([, s]) => <li><a href={s.url} target="_blank" rel="nofollow noopener">{s.label.en}</a></li>)}</ul>
+    <p>Errors: see the <a href={route('editorial', lang)}>editorial policy</a> and the <a href={route('contact', lang)}>contact page</a>.</p>
+  </div>
+</PageLayout>
