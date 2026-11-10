@@ -20,9 +20,9 @@ const nationIn = { id: 'nation', label: 'Where you pay Income Tax', def: 0, opti
 const SPECS: Record<string, MiniSpec> = {
   'relief-salary': {
     title: 'What the same contribution costs by each method', cta: 'Open the full relief calculator', ctaPage: 'home',
-    inputs: [salary(50000), money('gross', 'Total reaching the pension a year, tax top-up included', 5000, 'If you pay £80 from your bank, put £100: £3,000 paid is £3,750'), nationIn],
-    run: (v) => { const c = compareMethods(v.salary, v.gross, nation(v.nation));
-      return { head: ['Cost by relief at source', m(c.ras.netCost)], rows: [['Cost by net pay', m(c.netpay.netCost)], ['Cost by salary sacrifice', m(c.sacrifice.netCost)], ['Tax relief, share of the total in the pension', pc(c.ras.effectiveRate)], ['Your top tax rate', BAND_LABEL[c.ras.topBandBefore]]] }; },
+    inputs: [salary(45000), money('paid', 'You pay in a year', 3000, 'What leaves your bank or your payslip, before any top-up'), nationIn],
+    run: (v) => { const gross = v.paid / (1 - P.relief.rasRate); const c = compareMethods(v.salary, gross, nation(v.nation));
+      return { head: ['What it really costs you, paid from your bank', m(c.ras.netCost)], assume: `For one tax year, ${P.taxYear} · salary ${m(v.salary)} · ${m(gross)} reaching the pension, top-up included · after any claim to HMRC`, rows: [['Taken from your pay before tax (net pay)', m(c.netpay.netCost)], ['By salary sacrifice', m(c.sacrifice.netCost)], ['Your top tax rate', BAND_LABEL[c.ras.topBandBefore] === 'basic rate' && nation(v.nation) === 'ruk' ? 'basic rate (20%)' : BAND_LABEL[c.ras.topBandBefore]]] }; },
   },
   'ras-netpay': {
     title: 'Relief at source or net pay, on a low salary', cta: 'Compare all three methods', ctaPage: 'relief-at-source-vs-net-pay',
@@ -33,10 +33,10 @@ const SPECS: Record<string, MiniSpec> = {
   },
   claim: {
     title: 'The higher rate relief to claim back', cta: 'See the whole relief by method', ctaPage: 'home',
-    inputs: [salary(68000, 'Salary and other taxable income, before pension payments'), money('paid', 'You paid into a relief at source pension', 6000, 'From your bank account, this tax year'), nationIn],
+    inputs: [salary(60000, 'Salary and other taxable income, before pension payments'), money('paid', 'You pay into a private pension or SIPP from your bank', 3000, 'This tax year, before the provider’s top-up'), nationIn],
     run: (v) => { const r = relief({ salary: v.salary, nation: nation(v.nation), method: 'ras', amount: v.paid });
-      return { head: ['Extra you must claim yourself from HMRC (the tax office)', m(r.claim)], rows: [['Total in the pension (what you paid plus the provider’s top-up)', m(r.gross)], ['Already added by your provider', m(r.providerTopUp)], ['Real cost once claimed', m(r.netCost)]],
-        note: r.claim === 0 ? 'Nothing to claim: all of your income sits in the basic rate band, or below the Scottish intermediate rate.' : `This ${m(r.claim)} is on top of the ${m(r.providerTopUp)} your provider has already added. The steps to claim it are just below.` }; },
+      return { head: ['Extra you must claim yourself from HMRC (the tax office)', m(r.claim)], assume: `For one tax year, ${P.taxYear} · salary ${m(v.salary)} · you pay ${m(v.paid)} from your bank · ${nation(v.nation) === 'scotland' ? 'Scotland' : 'England, Wales or N. Ireland'}`, rows: [['Goes into your pension (what you pay plus the provider’s top-up)', m(r.gross)], ['Added by your provider (the basic 20%)', m(r.providerTopUp)], ['What it really costs you, once claimed', m(r.netCost)]],
+        note: r.claim === 0 ? 'Nothing to claim: all of your income is taxed at the basic rate (20%), or below the Scottish 21% rate.' : `Your provider has already added ${m(r.providerTopUp)}: the basic 20%. You claim another ${m(r.claim)} yourself: that is the higher-rate part. The steps are just below.` }; },
   },
   scot: {
     title: 'Scottish relief against the rest of the UK', cta: 'Open the Scottish relief guide', ctaPage: 'scottish-pension-tax-relief',

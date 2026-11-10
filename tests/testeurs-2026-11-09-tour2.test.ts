@@ -21,19 +21,24 @@ const base = { salary: 45000, amount: 3000, method: 0, nation: 0, other: 0, shar
 
 describe('naive testers 2026-11-09, second round', () => {
   it('1. method in payslip words, unsure = relief at source with a note', () => {
-    expect(METHOD_OPTS_UNSURE.map((o) => o.label)).toEqual(['From my bank, or after tax (relief at source)', 'Taken from my pay before tax (net pay)', 'My salary is reduced (salary sacrifice)', 'I don’t know: show the usual case']);
+    expect(METHOD_OPTS_UNSURE.map((o) => o.label)).toEqual(['From my bank or after tax (private pension, SIPP)', 'Taken from my pay before tax (net pay)', 'My salary is reduced (salary sacrifice)', 'I’m not sure: show the usual case']);
     const t = getTool('relief');
     const a = t.run(base), u = t.run({ ...base, method: 3 });
     expect(u.head).toEqual(a.head);
-    expect((u.notes ?? [])[0]).toMatch(/^Not sure of your method/);
+    expect((u.notes ?? [])[0]).toMatch(/^Set to “not sure”/);
+    // Five rules, 2026-11-10 (rule 5): the default does not answer for the reader.
+    expect(t.inputs.find((i) => i.id === 'method')!.def).toBe(3);
     expect(t.inputs.find((i) => i.id === 'flex')!.advanced).toBeFalsy();
   });
-  it('2. 20% and 25% said together', () => {
+  // Naive testers 2026-11-10: 20% and 25% side by side read as a contradiction; the relief is said in pounds only.
+  it('2. the top-up said in pounds, not as 20% and 25%', () => {
     const o = getTool('relief').run(base);
-    expect(o.sub).toContain('£1 for every £4 you pay, which is 20% of the £3,750');
+    expect(o.sub).toContain('£1 for every £4 you pay');
+    expect(o.sub).not.toMatch(/25%/);
     const body = plain(pageById('relief-at-source-vs-net-pay')!.resume(h));
-    expect(body).toContain('25% on top of your payment, or 20% of the £100');
-    const mini = getSpec('relief-salary').run({ salary: 50000, gross: 5000, nation: 0 });
+    expect(body).toContain('for every £80 you pay, the provider adds £20, so £100 lands in your pension');
+    expect(body).not.toContain('25% on top of your payment');
+    const mini = getSpec('relief-salary').run({ salary: 50000, paid: 4000, nation: 0 });
     expect(mini.rows.map((r) => r[0])).not.toContain('Relief by relief at source');
     expect(getSpec('claim').run({ salary: 68000, paid: 6000, nation: 0 }).rows.map((r) => r[0]).join()).not.toMatch(/band widened/);
   });
@@ -43,7 +48,7 @@ describe('naive testers 2026-11-09, second round', () => {
     expect(t.run({ ...base, salary: 60000, amount: 7800 }).action).toBe('How to claim this £1,946, step by step');
     expect(t.run(base).action).toBeUndefined();
     expect(pageById('higher-rate-pension-tax-relief')!.body(h)).toMatch(/^<h2 id="how-to-claim">/);
-    expect(getSpec('claim').run({ salary: 68000, paid: 6000, nation: 0 }).note).toContain('on top of the £1,500 your provider has already added');
+    expect(getSpec('claim').run({ salary: 68000, paid: 6000, nation: 0 }).note).toContain('Your provider has already added £1,500: the basic 20%. You claim another £1,500 yourself');
   });
   it('4. SIPP: one room figure, employer 0', () => {
     expect(pageById('sipp-calculator')!.tool!.props!.employer).toBe(0);

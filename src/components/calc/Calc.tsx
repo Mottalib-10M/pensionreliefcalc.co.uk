@@ -69,8 +69,9 @@ export default function Calc({ kind, defaults = {}, methodHref, idPrefix = 'c', 
         </form>
         <div data-resultat aria-live="polite" className="self-start border-l-4 border-accent-500 bg-accent-50 p-4">
           <MentionExemple lang="en" touched={touched} />
-          <p className="text-sm font-medium text-navy-700">{out.head[0]}</p>
+          <p className="text-base font-semibold text-navy-900">{out.head[0]}</p>
           <p className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{out.head[1]}</p>
+          {out.assume && <p data-fixe className="mt-1 text-sm text-navy-700">{out.assume}</p>}
           {out.sub && <p className="mt-1 text-sm text-navy-800">{out.sub}</p>}
           <table className="ledger mt-3 w-full text-sm"><tbody>
             {out.rows.map((r) => <tr key={r[0]} className={r[2] === 'total' ? 'total' : undefined}><td className="pr-3 text-navy-700">{r[0]}</td><td className="tabular-nums text-right text-navy-900">{r[1]}</td></tr>)}

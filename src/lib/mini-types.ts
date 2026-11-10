@@ -2,7 +2,9 @@
 export interface MiniInput { id: string; label: string; def: number; unit?: string; max?: number; decimals?: number; help?: string; options?: Array<{ value: string; label: string }>;
   /** Folded into "More …" (`advanced`, this site's name; `avance`, the trame's): the fold's title shows its current value. */
   advanced?: boolean; avance?: boolean }
-export interface MiniOut { head: [string, string]; rows: Array<[string, string]>; note?: string }
+export interface MiniOut { head: [string, string]; rows: Array<[string, string]>; note?: string;
+  /** What the big figure assumes and over which period, shown just under it (five rules, 2026-11-10). */
+  assume?: string }
 export interface MiniSpec {
   title: string; cta: string; ctaPage?: string; inputs: MiniInput[];
   /** `touched`: the fields the reader has changed (naive testers, 2026-11-08). While it is empty the
@@ -12,6 +14,8 @@ export interface MiniSpec {
 export interface Segment { label: string; value: number; color: string }
 export interface ToolOut {
   head: [string, string]; sub?: string;
+  /** What the big figure assumes and over which period, shown just under it (five rules, 2026-11-10). */
+  assume?: string;
   rows: Array<[string, string] | [string, string, 'total']>;
   bar?: { segments: Segment[]; total: number; aria: string };
   notes?: string[];

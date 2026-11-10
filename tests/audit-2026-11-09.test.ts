@@ -16,10 +16,11 @@ const plain = (s: string) => s.replace(/<[^>]+>/g, ' ');
 
 describe('audit 2026-11-09', () => {
   it('£60,000 page: the claim in the text is the claim of the calculator', () => {
-    const r = h.relief({ salary: 60000, method: 'ras', amount: 7800 });
+    // Five rules, 2026-11-10 (rule 1): the same £3,000 payment as everywhere on the site.
+    const r = h.relief({ salary: 60000, method: 'ras', amount: 3000 });
     const body = plain(pageById('pension-tax-relief-on-60000-salary')!.body(h));
-    expect(body).toContain(`who pays ${h.m(7800)} has ${h.m(r.claim)} to claim`);
-    expect(h.m(r.claim)).toBe('£1,946');
+    expect(body).toContain(`who pays ${h.m(3000)} from their bank has ${h.m(r.claim)} to claim`);
+    expect(h.m(r.claim)).toBe('£750');
     expect(body).not.toContain('£1,950 to claim');
   });
   it('relief result: no NI wording for relief at source or net pay', () => {
@@ -34,7 +35,7 @@ describe('audit 2026-11-09', () => {
   });
   it('relief result: an England default points to the Scottish figure when it differs', () => {
     const o = getTool('relief').run({ salary: 45000, amount: 3000, method: 0, nation: 0, other: 0, share: 0, y2029: 0, flex: 0 });
-    expect((o.notes ?? []).some((n) => n.startsWith('Only if you pay Income Tax in Scotland:'))).toBe(true);
+    expect((o.notes ?? []).some((n) => n.startsWith('Live in Scotland? Choose it above'))).toBe(true);
   });
   it('methods page: the Scottish example shows the starter rate difference', () => {
     const st = h.R.compareMethods(15000, 1000, 'scotland');

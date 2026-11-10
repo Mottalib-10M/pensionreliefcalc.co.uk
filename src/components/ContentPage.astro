@@ -17,26 +17,37 @@ import { P } from '../lib/engine/params';
 import { articleSchema, faqSchema, breadcrumbSchema, webPageSchema, webApplicationSchema } from '../lib/seo';
 import { AUTHOR_NAME } from '../data/site-config';
 import type { PageDef, ToolDef } from '../lib/guide-types';
+import { glose, sansRefLoi } from '../lib/lisible';
 interface Props { page: PageDef }
 const { page } = Astro.props;
 const lang = 'en';
 const ui = t(lang);
 const path = route(page.id, lang);
 const h = helpers(true);
-const faqs = page.faqs(h);
-// Folded sections (naive testers 2026-11-09): the first H2 section stays open; every later section without a
-// calculator becomes a <details> under its own H2. The text stays in the HTML, the phone page gets short.
+// Three questions at most (five rules of the naive testers, 2026-11-10, rule 3).
+const faqs = page.faqs(h).slice(0, 3);
+// Three sections of text at most (five rules, 2026-11-10, rule 3): the first H2 section stays open, the second
+// is folded under its own H2, and every later section is merged into a third fold, "More detail".
 const plier = (html: string) => {
-  let vus = 0;
-  return html.split(/(?=<h2[\s>])/).map((sec) => {
-    const mh = sec.match(/^<h2([^>]*)>([\s\S]*?)<\/h2>/);
-    if (!mh) return sec;
-    vus += 1;
-    if (vus === 1 || sec.includes('<!--tool:')) return sec;
-    return `<details class="pli"><summary><h2${mh[1]}>${mh[2]}</h2></summary><div class="pli-corps">${sec.slice(mh[0].length)}</div></details>`;
-  }).join('');
+  const secs = html.split(/(?=<h2[\s>])/);
+  const avant = secs[0].match(/^<h2[\s>]/) ? '' : secs.shift()!;
+  const fold = (titre: string, attrs: string, corps: string) => `<details class="pli"><summary><h2${attrs}>${titre}</h2></summary><div class="pli-corps">${corps}</div></details>`;
+  const out = [avant];
+  secs.forEach((sec, k) => {
+    const mh = sec.match(/^<h2([^>]*)>([\s\S]*?)<\/h2>/)!;
+    if (k === 0) out.push(sec);
+    else if (k === 1 || secs.length === 3) out.push(fold(mh[2], mh[1], sec.slice(mh[0].length)));
+  });
+  if (secs.length > 3) out.push(fold('More detail, for the curious', '', secs.slice(2).join('')));
+  return out.join('');
 };
-const parts = plier(page.body(h)).split(/<!--tool:([a-z0-9:-]+)(?:\|(\{.*?\}))?-->/);
+// Trade words explained at their first appearance on the page, in reading order (rule 4); Acts' section
+// numbers left to the sources block.
+const vus = new Set<string>();
+const intro = glose(page.intro, vus);
+// The summary is mostly folded (Clamp): its explanations do not count for the body below.
+const resume = glose(sansRefLoi(page.resume(h)), new Set(vus));
+const parts = plier(glose(sansRefLoi(page.body(h)), vus)).split(/<!--tool:([a-z0-9:-]+)(?:\|(\{.*?\}))?-->/);
 const jsonLd = [articleSchema({ title: page.h1, description: page.description, path, lang }), webPageSchema({ name: page.h1, description: page.description, path, lang }), breadcrumbSchema([{ name: ui.breadcrumbHome, path: route('home', lang) }, { name: page.nav, path }])];
 if (page.tool) jsonLd.push(webApplicationSchema({ name: page.h1, description: page.description, path, lang }));
 if (faqs.length) jsonLd.push(faqSchema(faqs, lang));
@@ -45,21 +56,25 @@ const sources = page.sources.map((k) => ({ name: P.sources[k].label.en, url: P.s
 const chunks: Array<{ html?: string; tool?: ToolDef }> = [];
 for (let i = 0; i < parts.length; i += 3) { chunks.push({ html: parts[i] }); if (parts[i + 1]) chunks.push({ tool: { kind: parts[i + 1], props: parts[i + 2] ? JSON.parse(parts[i + 2]) : undefined } }); }
 // Every page opens on a calculator within its first 250 words (tool or mini): no date above it (§8.4).
-const reading = false;
+// Glosses (rule 4, 2026-11-10) lengthen the summary: a reading page whose calculator now starts more than
+// 250 words after the title shows its date at the top, as check-trame asks (§8.4). The mini adds about 40 words
+// (title, labels) before its first field; measured on the build of 2026-11-10 (ev 225, 2029 cap 240 / MPAA 250).
+const mots = (x: string) => x.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+const reading = !page.tool && mots(intro) + mots(resume) + 40 >= 248;
 ---
 <PageLayout title={page.title} description={page.description} lang={lang} jsonLd={jsonLd} faqs={faqs} related={related} sources={sources} breadcrumbs={[{ label: page.nav }]} dateEnHaut={reading}>
   <article>
     <header class="mb-3">
       <p class="kicker">{groupLabel(page.group)}</p>
       <h1 class="mt-1 text-[1.75rem] font-bold text-navy-900 max-sm:leading-tight sm:text-3xl md:text-4xl">{page.h1}</h1>
-      <p class="mt-2 text-base text-navy-700 sm:text-lg">{page.intro}</p>
+      <p class="mt-2 text-base text-navy-700 sm:text-lg" set:html={intro} />
       <p data-chrome class="mt-1 text-xs text-navy-600">{ui.independent} <a href={`${route('home', lang)}#start`} class="font-medium text-accent-700 underline underline-offset-2">{ui.startHere}</a></p>
     </header>
     {/* Tool page: the calculator comes straight after the title so its first field sits on the first
          screen (check-premier-ecran); the citable block follows it. Reading page: block first. */}
-    {!page.tool && <Clamp text={page.resume(h)} id={`clamp-${page.id}`} class="mb-3" />}
+    {!page.tool && <Clamp text={resume} id={`clamp-${page.id}`} class="mb-3" />}
     {page.tool && <div data-outil class="mb-4"><Tool tool={page.tool} primary={true} /></div>}
-    {page.tool && <Clamp text={page.resume(h)} id={`clamp-${page.id}`} class="mb-3" />}
+    {page.tool && <Clamp text={resume} id={`clamp-${page.id}`} class="mb-3" />}
     {page.mini && <div class="mb-4"><Tool tool={page.mini} idPrefix="g" /></div>}
     <p class="mb-8 text-sm text-navy-600">{ui.reviewedBy} <a href={route('about', lang)} class="underline hover:text-navy-900">{AUTHOR_NAME}</a> · <a href={route('editorial', lang)} class="underline hover:text-navy-900">{ui.editorialPolicy}</a> · <a href={route('method', lang)} class="underline hover:text-navy-900">{label('method', lang)}</a></p>
     <div class="prose prose-slate max-w-none">
