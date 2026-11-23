@@ -167,3 +167,19 @@ describe('High Income Child Benefit Charge (GOV.UK, from 2024/25)', () => {
     expect(hicbc(90000, 1)).toBe(Math.floor(childBenefitYear(1)));
   });
 });
+
+// Campaign 2027: the 2027/28 page runs the relief engine on the 2026/27 figures; that holds only while Budget 2026
+// keeps every figure the engine uses (OOTLAR Annex A, updated 5 November 2026). Any change must fail here.
+import PRM from '../src/data/params-2026.json';
+describe('2027/28 figures used by the relief engine', () => {
+  it('are the same as 2026/27 in England, Wales and Northern Ireland', () => {
+    const Y = PRM.y2027, I = PRM.income, A = PRM.allowances.years['2026/27'];
+    expect(Y.personalAllowance).toBe(I.personalAllowance);
+    expect(Y.taperThreshold).toBe(I.taperThreshold);
+    expect(Y.basicBand).toBe(I.ruk[0].upTo);
+    expect(Y.additionalFrom).toBe(I.paZeroAt);
+    expect([Y.rates.basic, Y.rates.higher, Y.rates.additional]).toEqual(I.ruk.map((b) => b.rate));
+    expect([Y.aa, Y.mpaa, Y.taperAdjusted]).toEqual([A.aa, A.mpaa, A.adjusted]);
+    expect([Y.niRates.main, Y.niRates.upper]).toEqual([PRM.ni.mainRate, PRM.ni.upperRate]);
+  });
+});

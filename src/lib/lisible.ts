@@ -18,8 +18,8 @@ const Y = P.allowances.years['2026/27'];
 const TERMS: Array<[string, RegExp, string]> = [
   ['pa', /\bPersonal Allowance\b/, `the first ${m(P.income.personalAllowance)} you earn tax-free`],
   ['sa', /\bSelf Assessment(?: return)?\b/, 'the yearly tax return'],
-  ['mpaa', /\bmoney purchase annual allowance\b|\bMPAA\b/, `the ${m(Y.mpaa!)} yearly limit once you have taken taxable money from a pension`],
-  ['aa', /\bannual allowance\b/, `the most that can go into all your pensions in a year without a tax charge, ${m(Y.aa)} for most people`],
+  ['mpaa', /\b[Mm]oney purchase annual allowance\b|\bMPAA\b/, `the ${m(Y.mpaa!)} yearly limit once you have taken taxable money from a pension`],
+  ['aa', /(?<!(?:[Pp]urchase|[Aa]lternative) )\bannual allowance\b/, `the most that can go into all your pensions in a year without a tax charge, ${m(Y.aa)} for most people`],
   ['gross', /\bgross\b(?! (?:pay|salary|income))/, 'the full amount going into the pension, tax relief included'],
   ['ani', /\badjusted net income\b/, 'your taxable income less pension payments'],
   ['taper', /\btaper(?:ed)?\b/, 'a gradual cut'],

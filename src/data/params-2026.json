@@ -343,7 +343,46 @@
     "from2028": 57,
     "changeDate": "2028-04-06"
   },
+  "y2027": {
+    "_about": "Tax year 2027/28 as set at Budget 2026: HM Revenue & Customs, Overview of Tax Legislation and Rates, Annex A (updated 5 November 2026), and DWP proposed benefit and pension rates 2027 to 2028 (11 November 2026) for the State Pension and Child Benefit.",
+    "taxYear": "2027/28",
+    "taxYearLong": "6 April 2027 to 5 April 2028",
+    "personalAllowance": 12570,
+    "taperThreshold": 100000,
+    "basicBand": 37700,
+    "additionalFrom": 125140,
+    "rates": { "basic": 0.2, "higher": 0.4, "additional": 0.45 },
+    "savingsRates": { "basic": 0.24, "higher": 0.44, "additional": 0.49 },
+    "aa": 60000,
+    "mpaa": 10000,
+    "taperAdjusted": 260000,
+    "lumpSumAllowance": 268275,
+    "lsdba": 1073100,
+    "niWeekly": { "lel": 133, "pt": 242, "uel": 967 },
+    "niRates": { "main": 0.08, "upper": 0.02 },
+    "statePensionWeekly": 250.7,
+    "childBenefit": { "eldestWeekly": 28, "otherWeekly": 18.55 },
+    "pensionsTaxAllowance": { "fullBelow": 13037, "goneAt": 13319, "withdrawPer": 3 }
+  },
   "sources": {
+    "gov_ootlar_2027": {
+      "url": "https://www.gov.uk/government/publications/budget-2026-overview-of-tax-legislation-and-rates-ootlar/annex-a-rates-and-allowances",
+      "label": {
+        "en": "HMRC, Budget 2026 Overview of Tax Legislation and Rates, Annex A: rates and allowances for 2027 to 2028 (GOV.UK)"
+      }
+    },
+    "gov_freeze_2031": {
+      "url": "https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt",
+      "label": {
+        "en": "HMRC, Maintaining the personal allowance and the basic rate limit until 5 April 2031 (GOV.UK)"
+      }
+    },
+    "gov_benefits_2027": {
+      "url": "https://www.gov.uk/government/publications/benefit-and-pension-rates-2027-to-2028/proposed-benefit-and-pension-rates-2027-to-2028",
+      "label": {
+        "en": "DWP, Proposed benefit and pension rates 2027 to 2028 (GOV.UK, 11 November 2026)"
+      }
+    },
     "gov_rates": {
       "url": "https://www.gov.uk/income-tax-rates",
       "label": {
