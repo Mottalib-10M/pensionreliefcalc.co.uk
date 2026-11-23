@@ -389,6 +389,12 @@
         "en": "GOV.UK, Income Tax rates and Personal Allowances (2026 to 2027)"
       }
     },
+    "scot_budget_2027": {
+      "url": "https://www.parliament.scot/-/media/files/committees/session-7/finance-committee/correspondence/2026/20261104-budget-bill-timetable-cab-sec-flg-to-fpac.pdf",
+      "label": {
+        "en": "Scottish Parliament, Finance and Public Administration Committee: letter of 4 November 2026 on the 2027-28 Budget Bill timetable (draft Budget on 3 December 2026)"
+      }
+    },
     "gov_scot": {
       "url": "https://www.gov.uk/scottish-income-tax",
       "label": {
